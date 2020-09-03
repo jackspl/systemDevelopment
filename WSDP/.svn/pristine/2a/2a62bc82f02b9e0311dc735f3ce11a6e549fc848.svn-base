@@ -1,0 +1,36 @@
+# @<COPYRIGHT>@
+#===============================================================================
+# Copyright 2015.
+# Siemens Product Lifecycle Management Software Inc.
+# All Rights Reserved.
+#===============================================================================
+# @<COPYRIGHT>@
+
+# The text here should be localized in other *Messages.properties files
+
+UploadsTitle=\u5bfc\u5165
+UploadMainFramePrimaryWorkAreaText=\u8bf7\u70b9\u51fb\u5bfc\u5165\u6309\u94ae\u9009\u62e9\u9700\u8981\u7684\u5bfc\u5165\u529f\u80fd\u3002
+UploadMainFrameTitle=\u5bfc\u5165\u4fe1\u606f\u4e3b\u9875\u9762
+BOMUploadTitle=BOM\u4e0a\u8f7d
+LstUploadTitle=lst/rpt/txt\u6587\u4ef6\u4e0a\u8f7d
+NotesToPDMTitle=NotesToPDM
+MashDownloadTitle=\u6279\u91cf\u4e0b\u8f7d\u5668\u4ef6\u8d44\u6599
+BatchChangeTitle=\u6279\u91cf\u5904\u7406\u66f4\u6539
+BatchChangeMfgpartTitle=\u6279\u91cf\u5220\u9664\u5382\u5bb6\u578b\u53f7\u53ca\u5668\u4ef6\u7684\u8d44\u6599
+DataReleaseTitle=\u6570\u636e\u5bf9\u5916\u53d1\u653e\u6279\u91cf\u4e0a\u8f7d
+SingleApplyDataTitle=\u6279\u91cf\u5904\u7406\u5355\u72ec\u6570\u636e\u7533\u8bf7
+TlbUploadTitle=TLB\u8ddf\u8e2a\u7f16\u7801\u6279\u91cf\u5bfc\u5165
+PartRoleUploadTitle=Part\u5c0f\u7c7b\u7684\u89d2\u8272\u914d\u7f6e\u6279\u91cf\u5bfc\u5165 
+RoleCfgUploadTitle=\u4ea7\u54c1V\u7248\u672c\u7684\u89d2\u8272\u914d\u7f6e\u6279\u91cf\u5bfc\u5165 
+BatchDownloadBOMTitle=\u6279\u91cf\u4e0b\u8f7dBOM\u6e05\u5355
+UploadABPartTitle=\u5bfc\u5165\u534e\u4e09AB\u7f16\u7801
+header=Header
+body=Body
+NotesToPDMCheckboxLabel=Click checkbox to enable OK button in footer.
+footer=Footer
+objectString=\u9009\u62e9\u7684\u5bf9\u8c61
+okButton=\u786e\u5b9a
+noSelection=\u4ec0\u4e48\u4e5f\u6ca1\u6709\u9009\u4e2d.
+NotesToPDMComplete=\u5bfc\u5165\u5b8c\u6210.
+uploadDisplayName=upload
+UploadCommandGroupTitle=\u5bfc\u5165

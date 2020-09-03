@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<!-- 
+// @<COPYRIGHT>@
+// ==================================================
+// Copyright 2015.
+// Siemens Product Lifecycle Management Software Inc.
+// All Rights Reserved.
+// ==================================================
+// @<COPYRIGHT>@
+-->
+<!-- UiBinder definition for the NotesToPDM command panel -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:upld="urn:import:gwtupload.client"
+    xmlns:upld2="urn:import:com.h3c.uploads.internal.views"
+    xmlns:uiw="urn:import:com.siemens.splm.clientfx.ui.widgets.published">
+    <ui:with type="com.h3c.uploads.resources.i18n.H3cUploadsMessages" field="resi18n" />    
+    <ui:import field="com.siemens.splm.clientfx.ui.databind.published.view.IPropertyDataBoundWidget.PropertyLabelDisplay.*" />
+    <ui:import field="com.siemens.splm.clientfx.ui.databind.published.view.IPropertyDataBoundWidget.*" />
+    <g:HTMLPanel styleName="aw-layout-panelContent">
+        
+         <g:HTMLPanel styleName="aw-layout-panelBody aw-base-scrollPanel">
+            <g:HTMLPanel styleName="aw-layout-panelSectionContent">
+              <g:FormPanel ui:field="formPanel" styleName="aw-layout-panelSectionContent" encoding="multipart/form-data" method="post" >
+		            <g:HTMLPanel styleName="aw-create-fileUploadContainer">
+		                <upld2:SingleUploader2 ui:field="fileUploader" styleName="aw-layout-panelSectionTitle" />		           
+		            </g:HTMLPanel>
+		        </g:FormPanel>
+              <g:TextArea ui:field="text" />
+            </g:HTMLPanel>   
+        </g:HTMLPanel>
+        
+        <div class="aw-layout-panelFooter">
+            <!-- <g:Label ui:field="NotesToPDMfooter" text="{resi18n.footer}" styleName="aw-layout-panelSectionTitle" /> -->
+            <g:Button ui:field="btnUpload" styleName="aw-base-blk-button" text="{resi18n.okButton}" />
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>

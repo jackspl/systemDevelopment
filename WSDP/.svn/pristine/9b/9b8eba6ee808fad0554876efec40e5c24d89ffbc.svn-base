@@ -1,0 +1,61 @@
+<template>
+  <!-- 管理主页面 -->
+  <div class="manage">
+    <el-tabs type="border-card" @tab-click="handleClick" v-model="activeName">
+      <el-tab-pane label="用户" name="first">
+        <kpi-Rank v-if="isShowTabs[0].flag"></kpi-Rank>
+      </el-tab-pane>
+      <el-tab-pane label="通知" name="second">
+        <kpi-Trend-Analysis v-if="isShowTabs[1].flag"></kpi-Trend-Analysis>
+      </el-tab-pane>
+      <el-tab-pane label="系统" name="third">
+        <kpi-Details-Query v-if="isShowTabs[2].flag"></kpi-Details-Query>
+      </el-tab-pane>
+    </el-tabs>
+    <!-- <el-tabs type="border-card" @tab-click="handleClick" v-model="activeName">
+      <el-tab-pane label="KPI排名" name="first">
+        <kpi-Rank></kpi-Rank>
+      </el-tab-pane>
+      <el-tab-pane label="KPI趋势分析" name="second">
+        <kpi-Trend-Analysis ></kpi-Trend-Analysis>
+      </el-tab-pane>
+      <el-tab-pane label="KPI详情查询" name="third">
+        <kpi-Details-Query  ></kpi-Details-Query>
+      </el-tab-pane>
+    </el-tabs>-->
+  </div>
+</template>
+<script>
+import kpiRank from "./components/manageUser";
+import kpiTrendAnalysis from "./components/manageNotice";
+import kpiDetailsQuery from "./components/manageSystem";
+
+export default {
+  data() {
+    return {
+      activeName: "third",
+      isShowTabs: [{ flag: false },{ flag: false }, { flag: true }]
+    };
+  },
+  components: {
+    "kpi-Rank": kpiRank,
+    "kpi-Trend-Analysis": kpiTrendAnalysis,
+    "kpi-Details-Query": kpiDetailsQuery
+  },
+  created() {},
+  methods: {
+    // 点击的时候在执行渲染（点一个渲染一个）
+    handleClick(tab, event) {
+      this.isShowTabs[tab.index - 0].flag = true;
+    }
+  }
+};
+</script>
+
+<style lang='scss' scoped>
+.manage {
+  .el-tabs--border-card > .el-tabs__header {
+    margin-bottom: 0px !important;
+  }
+}
+</style>

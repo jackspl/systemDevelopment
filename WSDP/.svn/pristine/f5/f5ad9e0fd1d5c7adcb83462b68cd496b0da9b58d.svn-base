@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szdeepwise.bydtcmonitor.mapper.BaseMapper">
+
+    <!--模糊查询，场景-->
+    <select id="fuzzyQueryScene" resultType="java.lang.String">
+        select
+            scene_name_desc
+        from
+            scene_list
+        where
+            scene_name_desc is not null and scene_name_desc != ''
+            <if test="sceneName != '' and sceneName != null">
+                and scene_name_desc like binary "%"#{sceneName}"%"
+            </if>
+    </select>
+
+    <!--模糊查询userId-->
+    <select id="fuzzyQueryUserId" resultType="java.lang.String">
+        select
+            distinct employee_name
+        from
+            ${sceneTableName}
+        where
+            employee_name is not null and employee_name != ''
+            <if test="userId != '' and userId != null">
+                and employee_name like binary "%"#{userId}"%"
+            </if>
+    </select>
+
+    <!--模糊查询employee_Id-->
+    <select id="fuzzyQueryEmployeeId" resultType="java.lang.String">
+        select
+        distinct employee_id employeeId
+        from
+        ${sceneTableName}
+        where
+        employee_id is not null and employee_id != ''
+        <if test="employeeId != '' and employeeId != null">
+            and employee_id like binary "%"#{employeeId}"%"
+        </if>
+    </select>
+
+    <!--模糊查询hostName-->
+    <select id="fuzzyQueryHostName" resultType="java.lang.String">
+        select
+            distinct host_name
+        from
+            ${sceneTableName}
+        where
+            host_name is not null and host_name != ''
+            <if test="hostName != '' and hostName != null">
+                and host_name like binary "%"#{hostName}"%"
+            </if>
+    </select>
+
+    <!--获取所有场景-->
+    <select id="getAllScene" resultType="com.szdeepwise.bydtcmonitor.entity.SceneListEntity">
+        select
+        scene_id,scene_name sceneName,scene_table_name sceneTableName,scene_name_desc sceneNameDesc
+        from
+        scene_list
+    </select>
+
+    <!--根据用户输入的sceneNameDesc得到sceneTableName，用于动态表名查询，可防注入-->
+    <select id="getTableNameByDesc" resultType="java.lang.String">
+        select scene_table_name from scene_list where scene_name_desc=#{sceneNameDesc};
+    </select>
+
+    <!--***************************************场景频次监控start***************************************-->
+    <select id="getFrequencyTableInfo" resultType="com.szdeepwise.bydtcmonitor.entity.RequestAndResponseEntity">
+        select
+        <if test="groupFlag == 1">
+            employee_name userId,
+        </if>
+        <if test="groupFlag == 2">
+            host_name hostName,
+        </if>
+        count(*) operationCount
+        from ${sceneTableName}
+        <where>
+            <if test="userId != '' and userId != null">
+                and binary employee_name = #{userId}
+            </if>
+            <if test="actionBeginTime != '' and actionBeginTime != null">
+                and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+            </if>
+            <if test="actionEndTime != '' and actionEndTime != null">
+                and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+            </if>
+            <if test="hostName != '' and hostName != null">
+                and binary host_name = #{hostName}
+            </if>
+        </where>
+        <if test="groupFlag == 1">
+            group by employee_name
+        </if>
+        <if test="groupFlag == 2">
+            group by host_name
+        </if>
+    </select>
+
+    <select id="getFrequencyTableZheXian" resultType="com.szdeepwise.bydtcmonitor.entity.RequestAndResponseEntity">
+        SELECT temp.zheXianX,
+        coalesce(u.unmber,0) 'zheXianY' from(
+        SELECT
+        adddate(#{actionBeginTime}, numlist.id) AS 'zheXianX'
+        FROM
+        (
+        SELECT
+        n1.i + n10.i * 10 + n100.i * 100 AS id
+        FROM
+        num n1
+        CROSS JOIN num AS n10
+        CROSS JOIN num AS n100
+        ) AS numlist
+        WHERE
+        adddate(#{actionBeginTime}, numlist.id) <![CDATA[<=]]> #{actionEndTime}) temp
+        LEFT JOIN
+        (SELECT left(action_begin_time,10)as udate,count(action_begin_time) unmber FROM ${sceneTableName}
+        where 1=1
+        <if test="userId != '' and userId != null">
+            and binary employee_name = #{userId}
+        </if>
+        <if test="hostName != '' and hostName != null">
+            and binary host_name = #{hostName}
+        </if>
+        GROUP BY
+        udate) u on temp.zheXianX = u.udate order by temp.zheXianX
+    </select>
+
+    <!--饼状图-->
+    <select id="queryNormalCount" resultType="java.lang.Integer">
+        select count(*) count from
+        ${sceneTableName}
+        <where>
+            <if test="userId != '' and userId != null">
+                and binary employee_name = #{userId}
+            </if>
+            <if test="actionBeginTime != '' and actionBeginTime != null">
+                and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+            </if>
+            <if test="actionEndTime != '' and actionEndTime != null">
+                and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+            </if>
+            <if test="hostName != '' and hostName != null">
+                and binary host_name = #{hostName}
+            </if>
+            <if test="sceneTableName == 'scene_login'.toString()">
+                <if test="exceptionLoginFlag == 1">
+                    and login_status = '跨部门登录'
+                </if>
+                <if test="exceptionLoginFlag == 2">
+                    and login_status != '跨部门登录'
+                </if>
+            </if>
+            <if test="sceneTableName == 'scene_mytc_viewDoc'.toString() or
+                sceneTableName == 'scene_mytc_open_dataset'.toString()">
+                <if test="exceptionLoginFlag == 1">
+                    and (cross_department_view = '是' or secret_file_view = '是')
+                </if>
+                <if test="exceptionLoginFlag == 2">
+                    and cross_department_view != '是' and secret_file_view != '是'
+                </if>
+            </if>
+            <if test="sceneTableName == 'scene_general_delete'.toString()">
+                <if test="exceptionLoginFlag == 1">
+                    and (cross_department_delete = '是' or cross_owner_delete = '是')
+                </if>
+                <if test="exceptionLoginFlag == 2">
+                    and cross_department_delete != '是' and cross_owner_delete != '是'
+                </if>
+            </if>
+            <if test="sceneTableName == 'scene_mytc_export_PLMXML'.toString() or
+                sceneTableName == 'scene_mytc_namedRef_download'.toString()">
+                <if test="exceptionLoginFlag == 1">
+                    and (cross_department_download = '是' or secret_file_download = '是' or
+                    size_out_of_download = '暂定大小超标' or overload_download = '是')
+                </if>
+                <if test="exceptionLoginFlag == 2">
+                    and cross_department_download != '是' and secret_file_download != '是' and
+                    size_out_of_download != '暂定大小超标' and overload_download != '是'
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <!--***************************************场景频次监控end***************************************-->
+
+
+    <!--***************************************场景性能监控start***************************************-->
+    <!--动态表名查询表格信息-->
+    <select id="getPerformanceTableInfo" resultType="com.szdeepwise.bydtcmonitor.entity.RequestAndResponseEntity">
+        select employee_name userId,host_name hostName,MAX(operation_time) operationMaxTime,
+        MIN(operation_time) operationMinTime,avg(operation_time) operationAvgTime,
+        sum(operation_time) operationSumTime,count(*) operationCount
+        from ${sceneTableName}
+        <where>
+            <if test="userId != '' and userId != null">
+                and binary employee_name = #{userId}
+            </if>
+            <if test="actionBeginTime != '' and actionBeginTime != null">
+                and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+            </if>
+            <if test="actionEndTime != '' and actionEndTime != null">
+                and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+            </if>
+            <if test="hostName != '' and hostName != null">
+                and binary host_name = #{hostName}
+            </if>
+        </where>
+        <if test="groupFlag == 1">
+            group by employee_name
+        </if>
+        <if test="groupFlag == 2">
+            group by host_name
+        </if>
+    </select>
+
+    <!--***************************************场景性能监控end***************************************-->
+
+
+    <!--***************************************操作详情检索start***************************************-->
+    <!--动态表名查询表格信息-->
+    <select id="getOperationDetail" resultType="com.szdeepwise.bydtcmonitor.entity.RequestAndResponseEntity">
+        select
+        employee_id id,
+        employee_name userId,
+        host_name hostName,
+        IP,
+        action_begin_time actionBeginTime,
+        action_end_time actionEndTime,
+        <include refid="Judge_Column_List" />
+/*        DATE_FORMAT(action_begin_time,'%Y-%m-%d %H:%i:%s.%f') actionBeginTime,
+        DATE_FORMAT(action_end_time,'%Y-%m-%d %H:%i:%s.%f') actionEndTime,*/
+        client_server_TTL clientServerTTL,
+        client_server_delay clientServerDelay
+        from ${sceneTableName}
+        <where>
+            <if test="userId != '' and userId != null">
+                and binary employee_name = #{userId}
+            </if>
+            <if test="actionBeginTime != '' and actionBeginTime != null">
+                and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+            </if>
+            <if test="actionEndTime != '' and actionEndTime != null">
+                and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+            </if>
+            <if test="hostName != '' and hostName != null">
+                and binary host_name = #{hostName}
+            </if>
+            <if test="employeeId != '' and employeeId != null">
+                and binary employee_id = #{employeeId}
+            </if>
+        </where>
+        order by id
+    </select>
+
+    <sql id="Judge_Column_List" >
+        <if test="sceneTableName == 'scene_create_component'.toString() or
+        sceneTableName == 'scene_create_doc_object'.toString() or
+        sceneTableName == 'scene_create_form'.toString() or
+        sceneTableName == 'scene_revise_doc_version'.toString() or
+        sceneTableName == 'scene_copy_component_version'.toString()">
+            item_id itemId,
+            name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_name_ref'.toString() or
+        sceneTableName == 'scene_create_dataset_text'.toString() or
+        sceneTableName == 'scene_open_dataset_text'.toString()">
+            item_id itemId,
+            dataset_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_copy_doc_version'.toString() or
+        sceneTableName == 'scene_paste_doc_version'.toString()">
+            item_id itemId,
+            doc_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_paste_component_version'.toString()">
+            item_id itemId,
+            component_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_revise_component_version'.toString()">
+            item_id itemId,
+            name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_delete_component_version'.toString()">
+            item_id itemId,
+            operator operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_send_to_pse'.toString() or
+        sceneTableName == 'scene_checkout_data'.toString() or
+        sceneTableName == 'scene_checkin_data'.toString() or
+        sceneTableName == 'scene_bom_expand_downward'.toString() or
+        sceneTableName == 'scene_checkin_dataset'.toString() or
+        sceneTableName == 'scene_checkout_dataset'.toString()">
+            item_id itemId,
+            '-' operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_search'.toString()">
+            '-' itemId,
+            keyword operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_create_workflow'.toString() or
+        sceneTableName == 'scene_workflow_approve'.toString()">
+            '-' itemId,
+            workflow_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_cancel_checkout'.toString()">
+            item_id itemId,
+            item_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_close_folder_newstuff'.toString() or
+        sceneTableName == 'scene_close_item_object'.toString()">
+            '-' itemId,
+            object_closed operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_create_folder'.toString()">
+            uid itemId,
+            dir_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_open_folder'.toString()">
+            uid itemId,
+            item_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_delete_form'.toString()">
+            '-' itemId,
+            sheet_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_open_home'.toString() or
+        sceneTableName == 'scene_open_newstuff'.toString()">
+            operator_id itemId,
+            owner operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_view_doc'.toString() or
+        sceneTableName == 'scene_download_doc'.toString()">
+            '-' itemId,
+            doc_name operaData,
+        </if>
+
+        /*新增场景*/
+        <if test="sceneTableName == 'scene_mytc_createDataset'.toString()">
+            dataset_uid itemId,
+            dataset_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_mytc_open_dataset'.toString()">
+            '-' itemId,
+            dataset_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_mytc_checkinData'.toString() or
+            sceneTableName == 'scene_mytc_checkoutData'.toString() or
+            sceneTableName == 'scene_general_copy'.toString() or
+            sceneTableName == 'scene_general_cut'.toString() or
+            sceneTableName == 'scene_general_paste'.toString() or
+            sceneTableName == 'scene_general_delete'.toString()">
+            item_id itemId,
+            item_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_mytc_export_PLMXML'.toString()">
+            item_id itemId,
+            name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_mytc_namedRef_download'.toString() or
+            sceneTableName == 'scene_mytc_namedRef_upload'.toString()">
+            '-' itemId,
+            file_name operaData,
+        </if>
+
+        <if test="sceneTableName == 'scene_mytc_viewDoc'.toString()">
+            '-' itemId,
+            doc_name operaData,
+        </if>
+
+    </sql>
+</mapper>

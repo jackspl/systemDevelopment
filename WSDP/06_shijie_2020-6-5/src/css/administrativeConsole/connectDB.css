@@ -1,0 +1,80 @@
+.connectDB .el-header {
+  background-color: rgb(187, 183, 182);
+  color: #333;
+  text-align: right;
+  height: 100px !important;
+  line-height: 100px;
+  font-size: 36px;
+  font-weight: 700;
+  padding-top: 10px;
+  color: rgb(78, 96, 90);
+}
+  
+.connectDB .el-aside {
+  background-color: #D3DCE6;
+  color: #333;
+  text-align: left;
+  line-height: 45px;
+  padding-left: 15px;
+}
+.connectDB .el-checkbox {
+  margin-right: 0px;
+  width: 100%;
+}
+.connectDB .el-main {
+  background-color: #02356f;;;
+  color: white;
+  width: 96%;
+  border: 1px solid #3279a9;
+  border-radius: 5px;
+}
+
+.connectDB .select1 {
+  margin-left: 20px;
+  width: 80%;
+  height: 25px;
+}
+.connectDB .el-input {
+  width: 80%;
+  margin-left: 20px;
+}
+.connectDB .el-input.lef40 {
+  width: 80%;
+}
+.connectDB .w100 {
+  display: block;
+  width: 100px;
+  float: left;
+}
+.connectDB .lin60 {
+  height: 60px;
+  line-height: 60px;
+}
+.connectDB .el-form-item__error {
+  left: 115px;
+}
+.connectDB .info {
+  margin-bottom: 10px;
+}
+.connectDB .labelColor .el-form-item__label {
+  color: white;
+}
+.connectDB .el-input__inner {
+  /* border-left: 1px solid #3279a9; */
+  background-color: #083760;
+  border: 0px;
+  color: white;
+}
+/* .el-input__inner */
+.connectDB .el-input {
+  border: 1px solid #00639e;
+  border-radius: 5px;
+}
+/* .connectDB .el-input__inner */
+/* .connectDB .el-tabs--card>.el-tabs__header .el-tabs__nav {
+  border: 1px solid #3279a9;
+}
+.connectDB  .el-tabs--card>.el-tabs__header .el-tabs__item {
+  border-left: 1px solid #3279a9;
+}
+  */

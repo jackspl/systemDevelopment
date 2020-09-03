@@ -1,0 +1,139 @@
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  *zoom: 1;
+}
+.manageNotice .hostTable .el-table th, .el-table tr{
+  background-color: #1f4271;
+}
+.manageNotice .hostTable .el-table, .el-table__expanded-cell{
+  background-color: #1f4271;
+}
+.manageNotice .hostTable .el-table thead {
+  color: white;
+}
+.manageNotice .hostTable .el-table {
+  color: white;
+}
+.manageNotice .hostTable .el-table td, .el-table--border td {
+  border: 0px;
+}
+.manageNotice .hostTable .specificContextClient .el-table--border th {
+  border: 0px;
+}
+.manageNotice .hostTable .specificContextClient .el-table--border th.gutter:last-of-type {
+  border: 0px;
+}
+.manageNotice .hostTable .el-table--border {
+  border: 0px;
+}
+.manageNotice .hostTable .el-table--border:after, .el-table--group:after, .el-table:before {
+  background-color: #1f4271;
+}
+.manageNotice .hostTable .el-table th.is-leaf {
+  border-bottom: 0px;
+  border-right: 0px;
+}
+.manageNotice .hostTable .el-table th>.cell {
+  text-align: left;
+      padding-left: 0;
+}
+
+/* ---------------- */
+.manageNotice .serverTable .el-table th.is-leaf {
+  border-bottom: 0px;
+  border-right: 0px;
+}
+.manageNotice .serverTable .el-table th, .el-table tr{
+  background-color: #1f4271;
+}
+.manageNotice .serverTable .el-table, .el-table__expanded-cell{
+  background-color: #1f4271;
+}
+.manageNotice .serverTable .el-table th>.cell {
+  text-align: left;
+      padding-left: 0;
+}
+.manageNotice .serverTable .el-table thead {
+  color: white;
+}
+.manageNotice .serverTable .el-table {
+  color: white;
+}
+.manageNotice .serverTable .el-table td, .el-table--border td {
+  border: 0px;
+}
+.manageNotice .serverTable .specificContextClient .el-table--border th, .el-table--border th.gutter:last-of-type {
+  border: 0px;
+}
+.manageNotice .serverTable .el-table--border {
+  border: 0px;
+}
+.manageNotice .serverTable .el-table--border:after, .el-table--group:after, .el-table:before {
+  background-color: #1f4271;
+}
+/* --------------- */
+.manageNotice .receiveMain .rece-left .re-time .el-input__inner {
+  height: 30px;
+  line-height: 0px;
+  width: 90px;
+  padding: 0;
+  padding-left: 5px;
+  box-sizing: border-box;
+  background-color: #1f4271;
+  color: white;
+  border: 1px solid #149ce4;
+}
+.manageNotice .receiveMain .el-date-editor.el-input, .el-date-editor.el-input__inner {
+  width: 90px;
+}
+.manageNotice .receiveMain .el-input__icon {
+  display: none;
+}
+/* ----------------- */
+.manageNotice .accountTable .el-table th.is-leaf {
+  border-bottom: 0px;
+  border-right: 0px;
+}
+.manageNotice .accountTable .el-table th, .el-table tr{
+  background-color: #1f4271;
+}
+.manageNotice .accountTable .el-table, .el-table__expanded-cell{
+  background-color: #1f4271;
+}
+.manageNotice .accountTable .el-table th>.cell {
+  text-align: left;
+      padding-left: 0;
+}
+.manageNotice .accountTable .el-table thead {
+  color: white;
+}
+.manageNotice .accountTable .el-table {
+  color: white;
+}
+.manageNotice .accountTable .el-table td {
+  border: 0px;
+}
+.manageNotice .accountTable .el-table--border td {
+  border: 0px;
+}
+.manageNotice .accountTable .specificContextClient .el-table--border th {
+  border: 0px;
+}
+.manageNotice .accountTable .specificContextClient .el-table--border th.gutter:last-of-type {
+  border: 0px;
+}
+.manageNotice .accountTable .el-table--border {
+  border: 0px;
+}
+.manageNotice .accountTable .el-table--border:after, .el-table--group:after, .el-table:before {
+  background-color: #1f4271;
+}

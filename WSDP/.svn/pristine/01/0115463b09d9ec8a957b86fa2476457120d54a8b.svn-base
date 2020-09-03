@@ -1,0 +1,312 @@
+/* 清除浮动的公共类 */
+.clearfix:before,
+.clearfix:after {
+  content:"";
+  display:table;
+}
+.clearfix:after {
+  clear:both;
+}
+/* 为了兼容IE6,7 */
+.clearfix {
+  *zoom:1;
+}
+
+.box {
+  width: 100%;
+  height: 100%;
+  padding: 0 0px;
+  min-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(47, 59, 82) !important;
+  letter-spacing:1px;
+  overflow: hidden!important;
+}
+.top {
+  height: 60px;
+  width: 100%;
+  padding: 0px;
+  background: rgba(24, 144, 255);
+}
+.top .logo {
+  width: 260px;
+  height: 60px;
+  float: left;
+  background-image: '../assets/lg.png';
+}
+.top .title {
+  flex: 1;
+  float: left;
+  text-align: center
+}
+.top .title i {
+  display: block;
+  float: left;
+  font-size: 24px;
+  line-height: 60px;
+  color: #fff;
+  margin-right: 20px;
+}
+.top .title p {
+  display: block;
+  float: left;
+  font-size: 18px;
+  line-height: 60px;
+  color: #fff;
+}
+.top .logout {
+  float: right;
+  width: 200px;
+  font-weight: 700;
+  text-align: right;
+  padding: 10px;
+  line-height: 40px;
+}
+.top .logout .lgout {
+  color: #fff;
+  margin-right: 10px;
+}
+.top .logout a {
+  color: #fff;
+}
+.top .time {
+  float: right;
+}
+.top .time p{
+  display: block;
+  line-height: 60px;
+}
+.main {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+
+  /* align-items: center; */
+}
+.left {
+  flex-shrink: 0;
+  float: left;
+  width: 200px;
+  height: 100%;
+  line-height: 30px;
+  background-color: #2f3b52;
+}
+
+.left .logo {
+  height: 160px;
+  background-color: #2f3b52;
+}
+.left .el-icon-arrow-down:before {
+  content: "";
+}
+.left .el-submenu__title i {
+  color: #3284c3;
+}
+.left .el-submenu__title {
+  height: 50px;
+  line-height: 50px;
+  color: #a5aab7;
+}
+.el-submenu [class^=el-icon-] {
+  transform: rotate(180deg);
+  /* font-size: 30px !important; */
+}
+.box .left .cgcolor {
+  transform: rotate(0deg);
+  transition: all .5s;
+}
+.left  .el-submenu__title:hover{
+  background-color: #4b576a !important;
+}
+.right  .el-tabs__item:hover{
+  color: white;
+  /* background-color: #4b576a !important; */
+}
+.left .el-menu-item:hover{
+  background-color: #4b576a !important;
+}
+.left .el-submenu .el-menu-item {
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+}
+.left .left-title {
+  height: 60px;
+  line-height: 60px;
+  color: #a5aab7;
+  background-color: #293449;
+  border-left: 10px solid #3284c3;
+  font-size: 26px;
+  /* padding-left: 15px; */
+  font-weight: 400;
+  letter-spacing:2px;
+  text-align: center;
+  border-top-right-radius:5px;
+  border-bottom-right-radius:5px;
+  margin-bottom: 10px;
+  box-shadow: 0px 20px 20px -20px rgba(0,0,0,.5);
+}
+.left .left-title-top10 {
+  height: 60px;
+  line-height: 60px;
+  color: #a5aab7;
+  background-color: #293449;
+  border-left: 10px solid #3284c3;
+  font-size: 26px;
+  margin-top: 10px;
+  /* padding-left: 15px; */
+  font-weight: 400;
+  letter-spacing:2px;
+  text-align: center;
+  border-top-right-radius:5px;
+  border-bottom-right-radius:5px;
+  margin-bottom: 10px;
+  box-shadow: 0px 20px 20px -20px rgba(0,0,0,.5);
+}
+
+.left .eventManagNum {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  /* line-height: 56px; */
+  border-radius: 55px;
+  color: white;
+  background-color: #20d8fa;
+  top: 16px;
+  display: block;
+  left: 140px;
+}
+/* 信息安全数据小图标样式 */
+.left .informationSecurityNum {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    /* line-height: 56px; */
+    border-radius: 55px;
+    color: white;
+    background-color: #ff0420;
+    top: 3px;
+    display: block;
+    left: 166px;
+}
+.left .informationSecurityNum p {
+  display: block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin: 0 auto;
+  color: white;
+  font-size: 12px;
+  font-style: normal;
+  text-align: center;
+  font-family: Microsoft YaHei;
+}
+.left .eventManagNum p {
+  display: block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin: 0 auto;
+  color: white;
+  font-style: normal;
+  text-align: center;
+  font-family: Microsoft YaHei;
+}
+.left .monitorNum {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  /* line-height: 56px; */
+  border-radius: 55px;
+  color: white;
+  background-color: red;
+  top: 16px;
+  display: block;
+  left: 140px;
+}
+.left .monitorNum p {
+  display: block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin: 0 auto;
+  color: white;
+  font-style: normal;
+  text-align: center;
+  font-family: Microsoft YaHei;
+}
+
+.left .title1 {
+  font-size: 18px;
+  font-weight: 400;
+}
+/* 处理右边框是1px的边框小bug */
+.el-aside .el-menu {
+  border:none;
+  background-color: #2f3b52;
+}
+.right {
+  flex-grow: 1;
+  height: auto;
+  width: 100%;
+  padding: 20px;
+  background-color: #02356f;
+}
+.box .el-main {
+  padding: 14px 24px;
+  overflow-y: hidden;
+}
+/* 主体右侧样式 */
+.right .el-tabs--border-card>.el-tabs__content {
+  padding: 0px;
+}
+.right .el-tabs--border-card {
+  background: #FFF;
+  border: 0px;
+}
+/* 背景颜色 */
+.right .el-row {
+  background-color: #02356f;
+}
+.index .right .grid-content .bg-purple-dark {
+  background-color: #164276;
+  border: 1px solid #00639e;
+  border-radius: 4px;
+}
+/* 右侧导航条样式 */
+.right .el-tabs__nav {
+  border: 1px solid #1b537f;
+  /* margin-bottom: 10px; */
+}
+.right .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+  color: white;
+  background-color: #596c7e;
+  border-right-color: #3279a9;
+  border-left-color: #3279a9;
+}
+.right .el-tabs--border-card>.el-tabs__header .el-tabs__item {
+  color: white;
+}
+.right .el-tabs__item {
+  background-color: #062c4e;
+}
+.right .el-tabs__nav-scroll {
+  background-color: #02356f;
+}
+/* 去除下边框高亮阴影 */
+.right .el-tabs--border-card {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+.right .el-tabs--border-card>.el-tabs__header .el-tabs__item {
+  border: 1px solid #3279a9;
+}
+.right .el-tabs--border-card>.el-tabs__header .el-tabs__item:not(.is-disabled):hover {
+  color: white;
+}
+.box .el-menu-item, .el-submenu__title {
+  height: 40px;
+  line-height: 40px;
+}

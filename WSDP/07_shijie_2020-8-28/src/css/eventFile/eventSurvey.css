@@ -1,0 +1,82 @@
+/* 清除浮动的公共类 */
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+/* 为了兼容IE6,7 */
+.clearfix {
+  *zoom: 1;
+}
+.eventSurvey .seachStyle .el-input--suffix .el-input__inner {
+  padding-right: 0;
+}
+.eventSurvey .seachStyle .el-form-item__label {
+  color: white;
+  font-size: 16px;
+}
+
+.eventSurvey .seachStyle .el-input--suffix .el-input__inner {
+  padding-right: 0;
+}
+
+.eventSurvey .seachStyle .el-input__inner {
+  background-color: #06385c;
+  border: 1px solid #0c7ebd;
+  height: 40px;
+  line-height: 40px;
+  color: white;
+}
+
+.eventSurvey .seachStyle .seachButton .el-button--primary {
+  height: 40px;
+  line-height: 0px;
+}
+
+.eventSurvey .seachStyle .el-form-item {
+  margin-bottom: 0px;
+}
+.eventSurvey .tableBox .el-table tbody tr:hover>td { 
+  background-color:#153A6b!important;
+  color: white;
+}
+.eventSurvey .tableBox .el-table .cell {
+  color: white;
+  padding: 0px;
+}
+.eventSurvey .tableBox .el-table th, .el-table tr {
+  background-color:#153A6b;
+  text-align: center;
+}
+.eventSurvey .tableBox .el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color:#153A6b;
+}
+.eventSurvey .tableBox .el-table--enable-row-transition .el-table__body td {
+  text-align: center;
+}
+.eventSurvey .monitEventTable .el-table th, .el-table tr {
+  background-color:#153A6b;
+  color: white;
+  text-align: center;
+}
+.eventSurvey .monitEventTable .el-table td, .el-table th.is-leaf {
+  border-bottom: 1px solid #3e74a3;
+  border-right: 1px solid #3e74a3;
+  text-align: center;
+}
+/* ----------------------- */
+.eventSurvey .monitUserTable .el-table th, .el-table tr {
+  background-color:#153A6b;
+  color: white;
+  text-align: center;
+}
+.eventSurvey .monitUserTable .el-table td, .el-table th.is-leaf {
+  border-bottom: 1px solid #3e74a3;
+  border-right: 1px solid #3e74a3;
+  text-align: center;
+}

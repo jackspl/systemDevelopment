@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.szdeepwise.bydtcmonitor.mapper.SceneCreateWorkflowMapper" >
+  <resultMap id="BaseResultMap" type="com.szdeepwise.bydtcmonitor.entity.SceneCreateWorkflow" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="employee_name" property="employeeName" jdbcType="VARCHAR" />
+    <result column="employee_id" property="employeeId" jdbcType="VARCHAR" />
+    <result column="employee_group" property="employeeGroup" jdbcType="VARCHAR" />
+    <result column="employee_role" property="employeeRole" jdbcType="VARCHAR" />
+    <result column="employee_project" property="employeeProject" jdbcType="VARCHAR" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="operation_time" property="operationTime" jdbcType="INTEGER" />
+    <result column="action_begin_time" property="actionBeginTime" jdbcType="TIMESTAMP" />
+    <result column="action_end_time" property="actionEndTime" jdbcType="TIMESTAMP" />
+    <result column="host_name" property="hostName" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="client_server_TTL" property="clientServerTtl" jdbcType="VARCHAR" />
+    <result column="client_server_delay" property="clientServerDelay" jdbcType="VARCHAR" />
+    <result column="workflow_name" property="workflowName" jdbcType="VARCHAR" />
+    <result column="object_name" property="objectName" jdbcType="VARCHAR" />
+    <result column="finish_time" property="finishTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, employee_name, employee_id, employee_group, employee_role, employee_project, 
+    company, operation_time, action_begin_time, action_end_time, host_name, IP, user_id, 
+    client_server_TTL, client_server_delay, workflow_name, object_name, finish_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from scene_create_workflow
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from scene_create_workflow
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.szdeepwise.bydtcmonitor.entity.SceneCreateWorkflow" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into scene_create_workflow (employee_name, employee_id, employee_group, 
+      employee_role, employee_project, company, 
+      operation_time, action_begin_time, action_end_time, 
+      host_name, IP, user_id, 
+      client_server_TTL, client_server_delay, workflow_name, 
+      object_name, finish_time)
+    values (#{employeeName,jdbcType=VARCHAR}, #{employeeId,jdbcType=VARCHAR}, #{employeeGroup,jdbcType=VARCHAR}, 
+      #{employeeRole,jdbcType=VARCHAR}, #{employeeProject,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, 
+      #{operationTime,jdbcType=INTEGER}, #{actionBeginTime,jdbcType=TIMESTAMP}, #{actionEndTime,jdbcType=TIMESTAMP}, 
+      #{hostName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{clientServerTtl,jdbcType=VARCHAR}, #{clientServerDelay,jdbcType=VARCHAR}, #{workflowName,jdbcType=VARCHAR}, 
+      #{objectName,jdbcType=VARCHAR}, #{finishTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.szdeepwise.bydtcmonitor.entity.SceneCreateWorkflow" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into scene_create_workflow
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="employeeName != null" >
+        employee_name,
+      </if>
+      <if test="employeeId != null" >
+        employee_id,
+      </if>
+      <if test="employeeGroup != null" >
+        employee_group,
+      </if>
+      <if test="employeeRole != null" >
+        employee_role,
+      </if>
+      <if test="employeeProject != null" >
+        employee_project,
+      </if>
+      <if test="company != null" >
+        company,
+      </if>
+      <if test="operationTime != null" >
+        operation_time,
+      </if>
+      <if test="actionBeginTime != null" >
+        action_begin_time,
+      </if>
+      <if test="actionEndTime != null" >
+        action_end_time,
+      </if>
+      <if test="hostName != null" >
+        host_name,
+      </if>
+      <if test="ip != null" >
+        IP,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="clientServerTtl != null" >
+        client_server_TTL,
+      </if>
+      <if test="clientServerDelay != null" >
+        client_server_delay,
+      </if>
+      <if test="workflowName != null" >
+        workflow_name,
+      </if>
+      <if test="objectName != null" >
+        object_name,
+      </if>
+      <if test="finishTime != null" >
+        finish_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="employeeName != null" >
+        #{employeeName,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null" >
+        #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeGroup != null" >
+        #{employeeGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeRole != null" >
+        #{employeeRole,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeProject != null" >
+        #{employeeProject,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="operationTime != null" >
+        #{operationTime,jdbcType=INTEGER},
+      </if>
+      <if test="actionBeginTime != null" >
+        #{actionBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actionEndTime != null" >
+        #{actionEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hostName != null" >
+        #{hostName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientServerTtl != null" >
+        #{clientServerTtl,jdbcType=VARCHAR},
+      </if>
+      <if test="clientServerDelay != null" >
+        #{clientServerDelay,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowName != null" >
+        #{workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="objectName != null" >
+        #{objectName,jdbcType=VARCHAR},
+      </if>
+      <if test="finishTime != null" >
+        #{finishTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.szdeepwise.bydtcmonitor.entity.SceneCreateWorkflow" >
+    update scene_create_workflow
+    <set >
+      <if test="employeeName != null" >
+        employee_name = #{employeeName,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeId != null" >
+        employee_id = #{employeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeGroup != null" >
+        employee_group = #{employeeGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeRole != null" >
+        employee_role = #{employeeRole,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeProject != null" >
+        employee_project = #{employeeProject,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="operationTime != null" >
+        operation_time = #{operationTime,jdbcType=INTEGER},
+      </if>
+      <if test="actionBeginTime != null" >
+        action_begin_time = #{actionBeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actionEndTime != null" >
+        action_end_time = #{actionEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="hostName != null" >
+        host_name = #{hostName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientServerTtl != null" >
+        client_server_TTL = #{clientServerTtl,jdbcType=VARCHAR},
+      </if>
+      <if test="clientServerDelay != null" >
+        client_server_delay = #{clientServerDelay,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowName != null" >
+        workflow_name = #{workflowName,jdbcType=VARCHAR},
+      </if>
+      <if test="objectName != null" >
+        object_name = #{objectName,jdbcType=VARCHAR},
+      </if>
+      <if test="finishTime != null" >
+        finish_time = #{finishTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.szdeepwise.bydtcmonitor.entity.SceneCreateWorkflow" >
+    update scene_create_workflow
+    set employee_name = #{employeeName,jdbcType=VARCHAR},
+      employee_id = #{employeeId,jdbcType=VARCHAR},
+      employee_group = #{employeeGroup,jdbcType=VARCHAR},
+      employee_role = #{employeeRole,jdbcType=VARCHAR},
+      employee_project = #{employeeProject,jdbcType=VARCHAR},
+      company = #{company,jdbcType=VARCHAR},
+      operation_time = #{operationTime,jdbcType=INTEGER},
+      action_begin_time = #{actionBeginTime,jdbcType=TIMESTAMP},
+      action_end_time = #{actionEndTime,jdbcType=TIMESTAMP},
+      host_name = #{hostName,jdbcType=VARCHAR},
+      IP = #{ip,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      client_server_TTL = #{clientServerTtl,jdbcType=VARCHAR},
+      client_server_delay = #{clientServerDelay,jdbcType=VARCHAR},
+      workflow_name = #{workflowName,jdbcType=VARCHAR},
+      object_name = #{objectName,jdbcType=VARCHAR},
+      finish_time = #{finishTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,1897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.szdeepwise.bydtcmonitor.mapper.BYDMapper">
+    <!-- ********************************* 操作Excel-start*********************************-->
+    <!--excel导入数据库-->
+    <insert id="insertExcel" parameterType="com.szdeepwise.bydtcmonitor.entity.HelpEntity">
+        insert into t_help (component, name, advice,reference_log, description,yellow_warning_threshold,
+        red_warning_threshold,reference_log_path,ip,user_name,password)
+        values (#{component,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{advice,jdbcType=LONGVARCHAR},
+          #{referenceLog,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR},
+          #{yellowWarningThreshold,jdbcType=VARCHAR},#{redWarningThreshold,jdbcType=VARCHAR},
+          #{referenceLogPath,jdbcType=VARCHAR},#{ip,jdbcType=VARCHAR},
+          #{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR})
+    </insert>
+
+    <!--插入t_component表-->
+    <insert id="insertComponent" parameterType="java.lang.String">
+        insert into t_component(component)
+        values (#{component,jdbcType=VARCHAR})
+    </insert>
+
+
+    <!--组件模糊查询-->
+    <select id="fuzzyQueryComponent" resultType="java.lang.String">
+        select distinct component
+        from t_component
+        WHERE
+        component is not null and component != ''
+        <if test="component != '' and component != null">
+            and component like binary "%"#{component}"%"
+        </if>
+    </select>
+
+    <!--名称模糊查询-->
+    <select id="fuzzyQueryName" resultType="java.lang.String">
+        select distinct name
+        from t_help
+        WHERE
+        name is not null and name != ''
+        <if test="name != '' and name != null">
+            and name like binary "%"#{name}"%"
+        </if>
+    </select>
+
+    <!--查询所有component-->
+    <select id="queryAllComponent" resultType="java.lang.String">
+        select component from t_component
+    </select>
+
+    <!--查询component-->
+    <select id="queryComponent" resultType="java.lang.String">
+        select component from t_component
+        <where>
+            <if test="component != '' and component != null">
+                and binary component = #{component}
+            </if>
+        </where>
+    </select>
+
+    <!--查询t_help表中component是否存在-->
+    <select id="tHelpQueryComponent" resultType="java.lang.String">
+        select distinct component from t_help
+        <where>
+            <if test="component != '' and component != null">
+                and component like binary "%"#{component}"%"
+            </if>
+        </where>
+    </select>
+
+    <!--新增前查询t_component-->
+    <select id="tComponentQuery" resultType="java.lang.String">
+        select component from t_component
+        <where>
+            <if test="component != '' and component != null">
+                LOCATE(component,#{component}) > 0;
+            </if>
+        </where>
+    </select>
+
+    <!--查询component-->
+    <select id="queryExcelComponent" resultType="java.lang.String">
+        select DISTINCT(binary component) component
+            from t_help
+        where
+            component is not null and component != ''
+        <if test="component != '' and component != null">
+            and component like binary "%"#{component}"%"
+        </if>
+        <if test="name != '' and name != null">
+            and binary name = #{name}
+        </if>
+        <if test="description != '' and description != null">
+            and binary description = #{description}
+        </if>
+        <if test="advice != '' and advice != null">
+            and binary advice = #{advice}
+        </if>
+        <if test="referenceLog != '' and referenceLog != null">
+            and binary reference_log = #{referenceLog}
+        </if>
+        <!--<if test="component != '' and component != null">
+            and component like binary "%"#{component}"%"
+        </if>
+        <if test="name != '' and name != null">
+            and name like binary "%"#{name}"%"
+        </if>
+        <if test="description != '' and description != null">
+            and description like binary "%"#{description}"%"
+        </if>
+        <if test="advice != '' and advice != null">
+            and advice like binary "%"#{advice}"%"
+        </if>
+        <if test="referenceLog != '' and referenceLog != null">
+            and reference_log like binary "%"#{referenceLog}"%"
+        </if>
+        <if test="yellowWarningThreshold != '' and yellowWarningThreshold != null">
+            and yellow_warning_threshold like binary "%"#{yellowWarningThreshold}"%"
+        </if>
+        <if test="redWarningThreshold != '' and redWarningThreshold != null">
+            and red_warning_threshold like binary "%"#{redWarningThreshold}"%"
+        </if>-->
+    </select>
+
+    <!--根据component查询help相关信息-->
+    <select id="queryHelpInfo" resultType="com.szdeepwise.bydtcmonitor.entity.HelpEntity">
+        select id,component,name,description,advice,reference_log referenceLog,
+        yellow_warning_threshold yellowWarningThreshold,
+        red_warning_threshold redWarningThreshold,
+        reference_log_path referenceLogPath,
+        ip,
+        user_name userName,
+        password
+        from t_help
+        <where>
+            <if test="component != '' and component != null">
+                and component like binary "%"#{component}"%"
+            </if>
+            <if test="id != '' and id != null">
+                and binary id = #{id}
+            </if>
+            <if test="name != '' and name != null">
+                and binary name = #{name}
+            </if>
+            <if test="description != '' and description != null">
+                and binary description = #{description}
+            </if>
+            <if test="advice != '' and advice != null">
+                and binary advice = #{advice}
+            </if>
+            <if test="referenceLog != '' and referenceLog != null">
+                and binary reference_log = #{referenceLog}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <!--删除-->
+    <delete id="deleteHelpData" parameterType="java.lang.Integer" >
+    delete from t_help
+    where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <!--删除t_component中不存在的component-->
+    <delete id="tComponentDelete" parameterType="java.lang.String" >
+    delete from t_component
+    where component = #{component,jdbcType=VARCHAR}
+   </delete>
+
+    <!--更新-->
+    <update id="updateHelpData" parameterType="com.szdeepwise.bydtcmonitor.entity.HelpEntity" >
+    update t_help
+    <set>
+        <if test="component != null" >
+            component = #{component,jdbcType=VARCHAR},
+        </if>
+        <if test="name != null" >
+            name = #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="description != null" >
+            description = #{description,jdbcType=LONGVARCHAR},
+        </if>
+        <if test="advice != null" >
+            advice = #{advice,jdbcType=LONGVARCHAR},
+        </if>
+        <if test="referenceLog != null" >
+            reference_log = #{referenceLog,jdbcType=VARCHAR},
+        </if>
+        <if test="yellowWarningThreshold != null" >
+            yellow_warning_threshold = #{yellowWarningThreshold,jdbcType=VARCHAR},
+        </if>
+        <if test="redWarningThreshold != null" >
+            red_warning_threshold = #{redWarningThreshold,jdbcType=VARCHAR},
+        </if>
+        <if test="referenceLogPath != null" >
+            reference_log_path = #{referenceLogPath,jdbcType=VARCHAR},
+        </if>
+        <if test="ip != null" >
+            ip = #{ip,jdbcType=VARCHAR},
+        </if>
+        <if test="userName != null" >
+            user_name = #{userName,jdbcType=VARCHAR},
+        </if>
+        <if test="password != null" >
+            password = #{password,jdbcType=VARCHAR}
+        </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <!-- *********************************nagios读取日志*********************************-->
+    <select id="queryLogByServiceName" resultType="java.lang.String" >
+        select reference_log from t_help where name = #{name,jdbcType=VARCHAR}
+   </select>
+
+
+    <!-- ********************************* 操作Excel-end*********************************-->
+
+    <!--*********************************tc-start*********************************-->
+    <!--查询tc_link_info-->
+    <select id="queryTcLinkInfo" resultType="com.szdeepwise.bydtcmonitor.entity.JDBCRequestEntity">
+    select url,service_name serviceName,port,user_name userName,pass_word passWord,select_DB selectDB
+    from tc_link_info
+    </select>
+
+    <!--保存tc连接信息-->
+    <insert id="insertTcLinkInfo">
+        insert into
+            tc_link_info(url,service_name,port,user_name,pass_word,select_DB)
+        values
+            (#{url},#{serviceName},#{port},#{userName},#{passWord},#{selectDB})
+    </insert>
+
+    <!--获取tc库中在线用户信息后，插入tc_online_info-->
+    <insert id="insertTcOnlineInfo">
+        insert ignore into
+            tc_online_info(puid,plogin_date,puser_name,pnode_name)
+        values
+            (#{pUid},#{pLoginDate},#{pUserName},#{pNodeName})
+    </insert>
+
+    <!--插入前：查询tc_online_info-->
+    <select id="queryTcOnlineInfoBefore" resultType="com.szdeepwise.bydtcmonitor.entity.JDBCResponseEntity">
+        SELECT
+            puid pUid
+        FROM
+        tc_online_info
+        <where>
+            <if test="pUid != '' and pUid != null">
+                and puid = #{pUid}
+            </if>
+        </where>
+    </select>
+
+    <!--插入后：查询tc_online_info-->
+    <select id="queryTcOnlineInfoAfter" resultType="com.szdeepwise.bydtcmonitor.entity.JDBCResponseEntity">
+        SELECT
+            puid pUid,
+            DATE_FORMAT(plogin_date,'%Y-%m-%d %H:%i:%s') pLoginDate,
+            puser_name pUserName,
+            pnode_name pNodeName
+        FROM
+        tc_online_info
+    </select>
+
+    <!--获取账号并发量的折线图，按天-->
+    <select id="getTcOnlineZheXianInfoByHour" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT a.hour zheXianX, ifnull(b.count, 0) zheXianY FROM (
+        SELECT 0 hour UNION ALL SELECT 1 hour UNION ALL SELECT 2 hour UNION ALL SELECT 3 hour UNION ALL SELECT 4 hour UNION ALL SELECT 5 hour UNION ALL SELECT 6 hour UNION ALL SELECT 7 hour UNION ALL SELECT 8 hour UNION ALL SELECT 9 hour UNION ALL SELECT 10 hour UNION ALL SELECT 11 hour UNION ALL SELECT 12 hour
+        UNION ALL SELECT 13 hour UNION ALL SELECT 14 hour UNION ALL SELECT 15 hour UNION ALL SELECT 16 hour UNION ALL SELECT 17 hour UNION ALL SELECT 18 hour UNION ALL SELECT 19 hour UNION ALL SELECT 20 hour UNION ALL SELECT 21 hour UNION ALL SELECT 22 hour UNION ALL SELECT 23 hour
+        ) a LEFT JOIN
+        (
+        SELECT
+        hour(plogin_date)  hour,
+        count(plogin_date) count
+        FROM tc_online_info
+        WHERE date_format(plogin_date, '%Y-%m-%d') = #{zheXianDate}
+        GROUP BY date_format(plogin_date, '%Y%m%d-%H'), hour
+        ) b
+        ON a.hour=b.hour
+        ORDER BY zheXianX
+    </select>
+
+    <!--获取账号并发量的折线图，按星期-->
+    <select id="getTcOnlineZheXianInfoByWeek" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        dayTb.cday zheXianX,
+        IFNULL(tNumTb.num,0) zheXianY
+        FROM (
+        SELECT @cdate := DATE_ADD(@cdate, INTERVAL - 1 DAY) cday
+        FROM( SELECT @cdate := DATE_ADD(#{zheXianDate}, INTERVAL +1 DAY) FROM scene_list limit 7) t0
+        ) dayTb
+        LEFT JOIN(
+        SELECT date(t.plogin_date) cday,count(*) num FROM tc_online_info t
+        GROUP BY cday
+        ) tNumTb ON tNumTb.cday = dayTb.cday
+    </select>
+
+    <!--获取账号并发量的折线图，按月-->
+    <select id="getTcOnlineZheXianInfoByMonth" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT temp.zheXianX,
+        coalesce(u.unmber,0) 'zheXianY' from(
+        SELECT
+        adddate(#{zheXianDate}, numlist.id) AS 'zheXianX'
+        FROM
+        (
+        SELECT
+        n1.i + n10.i * 10 + n100.i * 100 AS id
+        FROM
+        num n1
+        CROSS JOIN num AS n10
+        CROSS JOIN num AS n100
+        ) AS numlist
+        WHERE
+        adddate(#{zheXianDate}, numlist.id)  <![CDATA[<= ]]> date_add(#{zheXianDate},interval 1 month)) temp
+        LEFT JOIN
+        (SELECT left(plogin_date,10)as udate,count(plogin_date) unmber FROM tc_online_info
+        GROUP BY
+        udate) u on temp.zheXianX = u.udate order by temp.zheXianX
+    </select>
+    <!--*********************************tc-end*********************************-->
+
+    <!--根据hostName后三位判断主机所在部门-->
+    <select id="getHostNameGroup" resultType="java.lang.String">
+        select department_name from scene_department_list where department_code=#{hostNameSub}
+    </select>
+
+    <!--超量下载判断-->
+    <select id="judgeOverloadDownload" resultType="java.lang.Integer">
+        select count(*) from ${tableName} where employee_name=#{employeeName}
+    </select>
+
+    <!--查询所有部门-->
+    <!--<select id="queryAllEmployeeGroup" resultType="java.lang.String">
+        select
+            department_name
+        from
+            scene_department_list
+    </select>
+
+    &lt;!&ndash;查询所有项目&ndash;&gt;
+    <select id="queryAllEmployeeProject" resultType="java.lang.String">
+        select
+            distinct employee_project
+        from
+            ${tableName}
+        where employee_project is not null and employee_project != '';
+    </select>
+
+    &lt;!&ndash;查询所有姓名&ndash;&gt;
+    <select id="queryAllEmployeeName" resultType="java.lang.String">
+        select
+            distinct employee_name
+        from
+            ${tableName}
+        where employee_name is not null and employee_name != '';
+    </select>-->
+
+    <!--模糊查询，用户部门-->
+    <select id="fuzzyQueryEmployeeGroup" resultType="java.lang.String">
+        select
+            department_name
+        from
+        scene_department_list
+        <where>
+            <if test="employeeGroup != '' and employeeGroup != null">
+                and department_name like binary "%"#{employeeGroup}"%"
+            </if>
+        </where>
+    </select>
+
+    <!--模糊查询，项目-->
+    <select id="fuzzyQueryEmployeeProject" resultType="java.lang.String">
+        select
+            distinct employee_project
+        from
+            ${tableName}
+        where
+            employee_project is not null and employee_project != ''
+            <if test="employeeProject != '' and employeeProject != null">
+                and employee_project like binary "%"#{employeeProject}"%"
+            </if>
+    </select>
+
+    <!--模糊查询，姓名-->
+    <select id="fuzzyQueryEmployeeName" resultType="java.lang.String">
+        select
+        distinct employee_name
+        from
+        ${tableName}
+        where
+        employee_name is not null and employee_name != ''
+        <if test="employeeName != '' and employeeName != null">
+            and employee_name like binary "%"#{employeeName}"%"
+        </if>
+    </select>
+
+    <!--模糊查询，主机名-->
+    <select id="fuzzyQueryHostName" resultType="java.lang.String">
+        select
+        distinct host_name
+        from
+        scene_login
+        where
+        host_name is not null and host_name != ''
+        <if test="hostName != '' and hostName != null">
+            and host_name like binary "%"#{hostName}"%"
+        </if>
+    </select>
+
+    <!--模糊查询，主机所在部门-->
+    <select id="fuzzyQueryHostGroup" resultType="java.lang.String">
+        select
+        distinct host_name_group
+        from
+        scene_login
+        where
+        host_name_group is not null and host_name_group != ''
+        <if test="hostNameGroup != '' and hostNameGroup != null">
+            and host_name_group like binary "%"#{hostNameGroup}"%"
+        </if>
+    </select>
+
+
+    <!--模糊查询，文件名-->
+    <select id="fuzzyQueryDocName" resultType="java.lang.String">
+        select
+        distinct doc_name
+        from
+        ${tableName}
+        where
+        doc_name is not null and doc_name != ''
+        <if test="docName != '' and docName != null">
+            and doc_name like binary "%"#{docName}"%"
+        </if>
+    </select>
+
+    <!--模糊查询公司-->
+    <select id="fuzzyQueryCompany" resultType="java.lang.String">
+        select
+        distinct company
+        from
+        ${tableName}
+        where
+        company is not null and company != ''
+        <if test="company != '' and company != null">
+            and company like binary "%"#{company}"%"
+        </if>
+    </select>
+
+    <!--模糊查询，主机所在公司-->
+    <select id="fuzzyQueryHostCompany" resultType="java.lang.String">
+        SELECT DISTINCT
+        host_company
+        FROM
+        scene_login
+        where host_company is not null and host_company != ''
+            <if test="hostCompany != '' and hostCompany != null">
+                and host_company like binary "%"#{hostCompany}"%"
+            </if>
+    </select>
+
+    <!--模糊查询，ip-->
+    <select id="fuzzyQueryIP" resultType="java.lang.String">
+        select
+        distinct ip
+        from
+        ${tableName}
+        where
+        ip is not null and ip != ''
+        <if test="IP != '' and IP != null">
+            and ip like binary "%"#{IP}"%"
+        </if>
+    </select>
+
+    <!--模糊查询，文件所在部门-->
+    <select id="fuzzyQueryDocGroup" resultType="java.lang.String">
+        select
+        distinct owning_group
+        from
+        ${tableName}
+        where
+        owning_group is not null and owning_group != ''
+        <if test="docGroup != '' and docGroup != null">
+            and owning_group like binary "%"#{docGroup}"%"
+        </if>
+    </select>
+
+    <!--模糊查询，文件所在公司-->
+    <select id="fuzzyQueryDocCompany" resultType="java.lang.String">
+        select
+        distinct owning_company
+        from
+        ${tableName}
+        where
+        owning_company is not null and owning_company != ''
+        <if test="docCompany != '' and docCompany != null">
+            and owning_company like binary "%"#{docCompany}"%"
+        </if>
+    </select>
+
+    <!--模糊查询，文件所有者-->
+    <select id="fuzzyQueryDocOwner" resultType="java.lang.String">
+        select
+        distinct owning_user
+        from
+        ${tableName}
+        where
+        owning_user is not null and owning_user != ''
+        <if test="docOwner != '' and docOwner != null">
+            and owning_user like binary "%"#{docOwner}"%"
+        </if>
+    </select>
+
+
+
+    <!--表格字段排序公用sql-->
+    <sql id="Base_Column_List" >
+        <if test="paiXuFlag == 1">
+            order by convert(`employee_name` using gbk)
+        </if>
+        <if test="paiXuFlag == 2">
+            order by convert(`employee_name` using gbk) desc
+        </if>
+        <if test="paiXuFlag == 3">
+            order by action_begin_time
+        </if>
+        <if test="paiXuFlag == 4">
+            order by action_begin_time desc
+        </if>
+        <if test="paiXuFlag == 5">
+            order by ip
+        </if>
+        <if test="paiXuFlag == 6">
+            order by ip desc
+        </if>
+        <if test="paiXuFlag == 7">
+            order by convert(`employee_group` using gbk)
+        </if>
+        <if test="paiXuFlag == 8">
+            order by convert(`employee_group` using gbk) desc
+        </if>
+        <if test="paiXuFlag == 9">
+            order by convert(`host_name` using gbk)
+        </if>
+        <if test="paiXuFlag == 10">
+            order by convert(`host_name` using gbk) desc
+        </if>
+        <if test="paiXuFlag == 11">
+            order by convert(`employee_project` using gbk)
+        </if>
+        <if test="paiXuFlag == 12">
+            order by convert(`employee_project` using gbk) desc
+        </if>
+    </sql>
+
+    <!--***************************************信息安全功能-start*****************************************-->
+    <!--异常登录-->
+    <select id="getBYDPLMLoginInfo" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+            employee_name employeeName,
+            company,
+            DATE_FORMAT(action_begin_time,'%Y-%m-%d %H:%i:%s') actionBeginTime,
+            IP,
+            employee_group employeeGroup,
+            host_name hostName,
+            host_company hostCompany,
+            host_name_group hostNameGroup,
+            operation_time operationTime,
+            login_status loginStatus
+        FROM
+            scene_login
+        where 1=1
+            <if test="company != '' and company != null">
+                and binary company = #{company}
+            </if>
+            <if test="employeeGroup != '' and employeeGroup != null">
+                and binary employee_group = #{employeeGroup}
+            </if>
+            <if test="employeeName != '' and employeeName != null">
+                and binary employee_name = #{employeeName}
+            </if>
+            <if test="hostCompany != '' and hostCompany != null">
+                and binary host_company = #{hostCompany}
+            </if>
+            <if test="hostNameGroup != '' and hostNameGroup != null">
+                and binary host_name_group = #{hostNameGroup}
+            </if>
+            <if test="hostName != '' and hostName != null">
+                and binary host_name = #{hostName}
+            </if>
+            <if test="IP != '' and IP != null">
+                and binary IP = #{IP}
+            </if>
+            <if test="actionBeginTime != '' and actionBeginTime != null">
+                and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+            </if>
+            <if test="actionEndTime != '' and actionEndTime != null">
+                and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+            </if>
+            <if test="exceptionLoginFlag == 1">
+                and login_status = '跨部门登录'
+            </if>
+    </select>
+
+    <!--异常查看，场景：查看文档、打开数据集-->
+    <select id="getViewDocInfo" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        DATE_FORMAT(action_begin_time,'%Y-%m-%d %H:%i:%s') actionBeginTime,
+        company,
+        employee_group employeeGroup,
+        employee_name employeeName,
+        owning_company docCompany,
+        owning_group docGroup,
+        secret_file_view secretFileView,
+        cross_department_view crossDepartmentView,
+        <if test="tableName == 'scene_mytc_viewDoc'.toString()">
+            doc_name docName
+        </if>
+        <if test="tableName == 'scene_mytc_open_dataset'.toString()">
+            dataset_name docName
+        </if>
+        FROM
+        ${tableName}
+        where 1=1
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="docCompany != '' and docCompany != null">
+            and binary owning_company = #{docCompany}
+        </if>
+        <if test="docGroup != '' and docGroup != null">
+            and binary owning_group = #{docGroup}
+        </if>
+        <if test="docOwner != '' and docOwner != null">
+            and binary owning_user = #{docOwner}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="crossDepartmentViewFlag == 1">
+            and cross_department_view = '是'
+        </if>
+        <if test="secretFileViewFlag == 1">
+            and secret_file_view = '是'
+        </if>
+    </select>
+
+    <!--异常下载，场景：PLMXML导出、命名的引用下载-->
+    <select id="getDownloadDocInfo" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+            DATE_FORMAT(action_begin_time,'%Y-%m-%d %H:%i:%s') actionBeginTime,
+            company,
+            employee_group employeeGroup,
+            employee_name employeeName,
+            owning_company docCompany,
+            owning_group docGroup,
+            overload_download overloadDownload,
+            cross_department_download crossDepartmentDownload,
+            secret_file_download secretFileDownload,
+            size_out_of_download outOfSizeDownload,
+            file_name docName
+        FROM
+            ${tableName}
+        where 1=1
+            <if test="company != '' and company != null">
+                and binary company = #{company}
+            </if>
+            <if test="employeeGroup != '' and employeeGroup != null">
+                and binary employee_group = #{employeeGroup}
+            </if>
+            <if test="employeeName != '' and employeeName != null">
+                and binary employee_name = #{employeeName}
+            </if>
+            <if test="docCompany != '' and docCompany != null">
+                and binary owning_company = #{docCompany}
+            </if>
+            <if test="docGroup != '' and docGroup != null">
+                and binary owning_group = #{docGroup}
+            </if>
+            <if test="docOwner != '' and docOwner != null">
+                and binary owning_user = #{docOwner}
+            </if>
+            <if test="actionBeginTime != '' and actionBeginTime != null">
+                and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+            </if>
+            <if test="actionEndTime != '' and actionEndTime != null">
+                and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+            </if>
+            <if test="crossDepartmentDownloadFlag == 1">
+                and cross_department_download = '是'
+            </if>
+            <if test="secretFileDownloadFlag == 1">
+                and secret_file_download = '是'
+            </if>
+            <if test="outOfSizeDownloadFlag == 1">
+                and size_out_of_download = '暂定大小超标'
+            </if>
+            <if test="overloadDownloadFlag == 1">
+                and overload_download = '是'
+            </if>
+    </select>
+
+    <!--异常删除，场景：删除-->
+    <select id="getAbnormalDeleteInfo" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        DATE_FORMAT(action_begin_time,'%Y-%m-%d %H:%i:%s') actionBeginTime,
+        company,
+        employee_group employeeGroup,
+        employee_name employeeName,
+        owning_company docCompany,
+        owning_group docGroup,
+        owning_user docOwner,
+        cross_department_delete crossDepartmentDelete,
+        cross_owner_delete crossOwnerDelete,
+        item_name docName
+        FROM
+        ${tableName}
+        where 1=1
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="docCompany != '' and docCompany != null">
+            and binary owning_company = #{docCompany}
+        </if>
+        <if test="docGroup != '' and docGroup != null">
+            and binary owning_group = #{docGroup}
+        </if>
+        <if test="docOwner != '' and docOwner != null">
+            and binary owning_user = #{docOwner}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="crossDepartmentDeleteFlag == 1">
+            and cross_department_delete = '是'
+        </if>
+        <if test="crossOwnerDeleteFlag == 1">
+            and cross_owner_delete = '是'
+        </if>
+    </select>
+
+    <!--查询employeeName集合-->
+    <select id="getInfoSafeEmployeeName" resultType="java.lang.String">
+        SELECT
+        distinct employee_name employeeName
+        FROM
+        ${tableName}
+        where
+        employee_name is not null and employee_name != ''
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+    </select>
+
+    <!--查询employeeGroup集合-->
+    <select id="getInfoSafeEmployeeGroup" resultType="java.lang.String">
+        SELECT
+        distinct employee_group employeeGroup
+        FROM
+        ${tableName}
+        where
+        employee_group is not null and employee_group != ''
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+    </select>
+
+
+    <!--信息安全模块，趋势分析，个人趋势，饼状图-->
+    <select id="employeeNamePieChart" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        employee_name employeeName,
+        count(*) operaCount
+        FROM
+        ${tableName}
+        where
+        employee_name is not null and employee_name != ''
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+            group by employee_name
+    </select>
+
+    <!--信息安全模块，趋势分析，部门趋势，饼状图-->
+    <select id="employeeGroupPieChart" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        employee_group employeeGroup,
+        count(*) operaCount
+        FROM
+        ${tableName}
+        where
+        employee_group is not null and employee_group != ''
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+        group by employee_group
+    </select>
+
+    <!--信息安全模块，趋势分析，公司趋势，饼状图-->
+    <select id="employeeCompanyPieChart" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        company,
+        count(*) operaCount
+        FROM
+        ${tableName}
+        where
+        company is not null and company != ''
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+        group by company
+    </select>
+
+
+    <!--信息安全模块，趋势分析，个人趋势，折线图-->
+    <select id="queryNameZheXianLike" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(count(*),0)
+        FROM
+        ${tableName}
+        where
+        employee_name is not null and employee_name != ''
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+        <if test="zheXianX != '' and zheXianX != null">
+            and action_begin_time like concat('%',#{zheXianX},'%')
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+    </select>
+
+    <!--信息安全模块，趋势分析，部门趋势，柱状图-->
+    <select id="queryGroupZhuZhuangLike" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(count(*),0)
+        FROM
+        ${tableName}
+        where
+        employee_group is not null and employee_group != ''
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="zheXianX != '' and zheXianX != null">
+            and action_begin_time like concat('%',#{zheXianX},'%')
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+    </select>
+
+    <!--信息安全模块，趋势分析，公司趋势，柱状图-->
+    <select id="queryCompanyZhuZhuangLike" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(count(*),0)
+        FROM
+        ${tableName}
+        where
+        company is not null and company != ''
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="zheXianX != '' and zheXianX != null">
+            and action_begin_time like concat('%',#{zheXianX},'%')
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+    </select>
+
+    <!--信息安全模块，总览，四种异常饼状图-->
+    <select id="queryAllPieChart" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        count(*) operaCount
+        FROM
+        ${tableName}
+        where 1=1
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+    </select>
+
+    <!--信息安全模块，总览，四种异常柱状图-->
+    <select id="queryAbnormalZheXianLike" resultType="java.lang.Integer">
+        SELECT
+        IFNULL(count(*),0)
+        FROM
+        ${tableName}
+        where
+        1=1
+        <if test="zheXianX != '' and zheXianX != null">
+            and action_begin_time like concat('%',#{zheXianX},'%')
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            and login_status = '跨部门登录'
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            and (cross_department_view = '是' or secret_file_view = '是')
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            and (cross_department_delete = '是' or cross_owner_delete = '是')
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            and (cross_department_download = '是' or secret_file_download = '是' or
+            size_out_of_download = '暂定大小超标' or overload_download = '是')
+        </if>
+    </select>
+
+    <!--根据EmployeeName查询employeeGroup-->
+    <select id="getGroupByName" resultType="java.lang.String">
+        select
+        distinct employee_group
+        from
+        ${tableName}
+        where
+        employee_group is not null and employee_group != ''
+        <if test="employeeName != '' and employeeName != null">
+            and binary employee_name = #{employeeName}
+        </if>
+    </select>
+
+
+
+    <!--***************************************信息安全功能-end*****************************************-->
+
+    <!-- 获取登录记录的折线图信息，按天-->
+    <select id="getBYDPLMLoginZheXianInfoByHour" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT a.hour zheXianX, ifnull(b.count, 0) zheXianY FROM (
+        SELECT 0 hour UNION ALL SELECT 1 hour UNION ALL SELECT 2 hour UNION ALL SELECT 3 hour UNION ALL SELECT 4 hour UNION ALL SELECT 5 hour UNION ALL SELECT 6 hour UNION ALL SELECT 7 hour UNION ALL SELECT 8 hour UNION ALL SELECT 9 hour UNION ALL SELECT 10 hour UNION ALL SELECT 11 hour UNION ALL SELECT 12 hour
+        UNION ALL SELECT 13 hour UNION ALL SELECT 14 hour UNION ALL SELECT 15 hour UNION ALL SELECT 16 hour UNION ALL SELECT 17 hour UNION ALL SELECT 18 hour UNION ALL SELECT 19 hour UNION ALL SELECT 20 hour UNION ALL SELECT 21 hour UNION ALL SELECT 22 hour UNION ALL SELECT 23 hour
+              ) a LEFT JOIN
+        (
+        SELECT
+        hour(action_begin_time)  hour,
+        count(action_begin_time) count
+        FROM scene_login
+        WHERE date_format(action_begin_time, '%Y-%m-%d') = #{zheXianDate}
+        <if test="exceptionLoginFlag == 1">
+            and login_status = '跨部门登录'
+        </if>
+        GROUP BY date_format(action_begin_time, '%Y%m%d-%H'), hour
+        ) b
+        ON a.hour=b.hour
+        ORDER BY zheXianX
+    </select>
+
+    <!--获取登录记录的折线图信息，按星期-->
+    <select id="getBYDPLMLoginZheXianInfoByWeek" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+            dayTb.cday zheXianX,
+            IFNULL(tNumTb.num,0) zheXianY
+        FROM (
+            SELECT @cdate := DATE_ADD(@cdate, INTERVAL - 1 DAY) cday
+            FROM( SELECT @cdate := DATE_ADD(#{zheXianDate}, INTERVAL +1 DAY) FROM scene_list limit 7) t0
+        ) dayTb
+        LEFT JOIN(
+            SELECT date(t.action_begin_time) cday,count(*) num FROM scene_login t
+            <if test="exceptionLoginFlag == 1">
+                where login_status = '跨部门登录'
+            </if>
+            GROUP BY cday
+        ) tNumTb ON tNumTb.cday = dayTb.cday
+    </select>
+
+    <!--获取登录记录的折线图信息，按月-->
+    <select id="getBYDPLMLoginZheXianInfoByMonth" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT temp.zheXianX,
+        coalesce(u.unmber,0) 'zheXianY' from(
+        SELECT
+        adddate(#{zheXianDate}, numlist.id) AS 'zheXianX'
+        FROM
+        (
+        SELECT
+        n1.i + n10.i * 10 + n100.i * 100 AS id
+        FROM
+        num n1
+        CROSS JOIN num AS n10
+        CROSS JOIN num AS n100
+        ) AS numlist
+        WHERE
+        adddate(#{zheXianDate}, numlist.id)  <![CDATA[<= ]]> date_add(#{zheXianDate},interval 1 month)) temp
+        LEFT JOIN
+        (SELECT left(action_begin_time,10)as udate,count(action_begin_time) unmber FROM scene_login
+        <if test="exceptionLoginFlag == 1">
+            where login_status = '跨部门登录'
+        </if>
+        GROUP BY
+        udate) u on temp.zheXianX = u.udate order by temp.zheXianX
+    </select>
+
+    <!-- 获取文档下载的折线图信息，按天-->
+    <select id="getDownloadDocZheXianInfoByHour" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT a.hour zheXianX, ifnull(b.count, 0) zheXianY FROM (
+        SELECT 0 hour UNION ALL SELECT 1 hour UNION ALL SELECT 2 hour UNION ALL SELECT 3 hour UNION ALL SELECT 4 hour UNION ALL SELECT 5 hour UNION ALL SELECT 6 hour UNION ALL SELECT 7 hour UNION ALL SELECT 8 hour UNION ALL SELECT 9 hour UNION ALL SELECT 10 hour UNION ALL SELECT 11 hour UNION ALL SELECT 12 hour
+        UNION ALL SELECT 13 hour UNION ALL SELECT 14 hour UNION ALL SELECT 15 hour UNION ALL SELECT 16 hour UNION ALL SELECT 17 hour UNION ALL SELECT 18 hour UNION ALL SELECT 19 hour UNION ALL SELECT 20 hour UNION ALL SELECT 21 hour UNION ALL SELECT 22 hour UNION ALL SELECT 23 hour
+        ) a LEFT JOIN
+        (
+        SELECT
+        hour(action_begin_time)  hour,
+        count(action_begin_time) count
+        FROM scene_download_doc
+        WHERE date_format(action_begin_time, '%Y-%m-%d') = #{zheXianDate}
+        <if test="exceptionLoginFlag == 1">
+            and overload_download='是'
+        </if>
+        <if test="exceptionLoginFlag == 2">
+            and cross_department_download='是'
+        </if>
+        <if test="exceptionLoginFlag == 3">
+            and secret_file_download='是'
+        </if>
+        GROUP BY date_format(action_begin_time, '%Y%m%d-%H'), hour
+        ) b
+        ON a.hour=b.hour
+        ORDER BY zheXianX
+    </select>
+
+    <!--获取文档下载的折线图信息，按星期-->
+    <select id="getDownloadDocZheXianInfoByWeek" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        dayTb.cday zheXianX,
+        IFNULL(tNumTb.num,0) zheXianY
+        FROM (
+        SELECT @cdate := DATE_ADD(@cdate, INTERVAL - 1 DAY) cday
+        FROM( SELECT @cdate := DATE_ADD(#{zheXianDate}, INTERVAL +1 DAY) FROM scene_list limit 7) t0
+        ) dayTb
+        LEFT JOIN(
+        SELECT date(t.action_begin_time) cday,count(*) num FROM scene_download_doc t
+        where 1=1
+        <if test="exceptionLoginFlag == 1">
+            and overload_download='是'
+        </if>
+        <if test="exceptionLoginFlag == 2">
+            and cross_department_download='是'
+        </if>
+        <if test="exceptionLoginFlag == 3">
+            and secret_file_download='是'
+        </if>
+        GROUP BY cday
+        ) tNumTb ON tNumTb.cday = dayTb.cday
+    </select>
+
+    <!--获取文档下载的折线图信息，按月-->
+    <select id="getDownloadDocZheXianInfoByMonth" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT temp.zheXianX,
+        coalesce(u.unmber,0) 'zheXianY' from(
+        SELECT
+        adddate(#{zheXianDate}, numlist.id) AS 'zheXianX'
+        FROM
+        (
+        SELECT
+        n1.i + n10.i * 10 + n100.i * 100 AS id
+        FROM
+        num n1
+        CROSS JOIN num AS n10
+        CROSS JOIN num AS n100
+        ) AS numlist
+        WHERE
+        adddate(#{zheXianDate}, numlist.id)  <![CDATA[<= ]]> date_add(#{zheXianDate},interval 1 month)) temp
+        LEFT JOIN
+        (SELECT left(action_begin_time,10)as udate,count(action_begin_time) unmber FROM scene_mytc_export_PLMXML
+        where 1=1
+        <if test="exceptionLoginFlag == 1">
+            and overload_download='是'
+        </if>
+        <if test="exceptionLoginFlag == 2">
+            and cross_department_download='是'
+        </if>
+        <if test="exceptionLoginFlag == 3">
+            and secret_file_download='是'
+        </if>
+        GROUP BY
+        udate) u on temp.zheXianX = u.udate order by temp.zheXianX
+    </select>
+
+
+    <!-- 获取文档查看的折线图信息，按天-->
+    <select id="getViewDocZheXianInfoByHour" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT a.hour zheXianX, ifnull(b.count, 0) zheXianY FROM (
+        SELECT 0 hour UNION ALL SELECT 1 hour UNION ALL SELECT 2 hour UNION ALL SELECT 3 hour UNION ALL SELECT 4 hour UNION ALL SELECT 5 hour UNION ALL SELECT 6 hour UNION ALL SELECT 7 hour UNION ALL SELECT 8 hour UNION ALL SELECT 9 hour UNION ALL SELECT 10 hour UNION ALL SELECT 11 hour UNION ALL SELECT 12 hour
+        UNION ALL SELECT 13 hour UNION ALL SELECT 14 hour UNION ALL SELECT 15 hour UNION ALL SELECT 16 hour UNION ALL SELECT 17 hour UNION ALL SELECT 18 hour UNION ALL SELECT 19 hour UNION ALL SELECT 20 hour UNION ALL SELECT 21 hour UNION ALL SELECT 22 hour UNION ALL SELECT 23 hour
+        ) a LEFT JOIN
+        (
+        SELECT
+        hour(action_begin_time)  hour,
+        count(action_begin_time) count
+        FROM scene_view_doc
+        WHERE date_format(action_begin_time, '%Y-%m-%d') = #{zheXianDate}
+        <if test="exceptionLoginFlag == 1">
+            and cross_department_view='是'
+        </if>
+        <if test="exceptionLoginFlag == 2">
+            and secret_file_view='是'
+        </if>
+        GROUP BY date_format(action_begin_time, '%Y%m%d-%H'), hour
+        ) b
+        ON a.hour=b.hour
+        ORDER BY zheXianX
+    </select>
+
+    <!--获取文档查看的折线图信息，按星期-->
+    <select id="getViewDocZheXianInfoByWeek" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        dayTb.cday zheXianX,
+        IFNULL(tNumTb.num,0) zheXianY
+        FROM (
+        SELECT @cdate := DATE_ADD(@cdate, INTERVAL - 1 DAY) cday
+        FROM( SELECT @cdate := DATE_ADD(#{zheXianDate}, INTERVAL +1 DAY) FROM scene_list limit 7) t0
+        ) dayTb
+        LEFT JOIN(
+        SELECT date(t.action_begin_time) cday,count(*) num FROM scene_view_doc t
+        where 1=1
+        <if test="exceptionLoginFlag == 1">
+            and cross_department_view='是'
+        </if>
+        <if test="exceptionLoginFlag == 2">
+            and secret_file_view='是'
+        </if>
+        GROUP BY cday
+        ) tNumTb ON tNumTb.cday = dayTb.cday
+    </select>
+
+    <!--获取文档查看的折线图信息，按月-->
+    <select id="getViewDocZheXianInfoByMonth" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT temp.zheXianX,
+        coalesce(u.unmber,0) 'zheXianY' from(
+        SELECT
+        adddate(#{zheXianDate}, numlist.id) AS 'zheXianX'
+        FROM
+        (
+        SELECT
+        n1.i + n10.i * 10 + n100.i * 100 AS id
+        FROM
+        num n1
+        CROSS JOIN num AS n10
+        CROSS JOIN num AS n100
+        ) AS numlist
+        WHERE
+        adddate(#{zheXianDate}, numlist.id)  <![CDATA[<= ]]> date_add(#{zheXianDate},interval 1 month)) temp
+        LEFT JOIN
+        (SELECT left(action_begin_time,10)as udate,count(action_begin_time) unmber FROM scene_mytc_viewDoc
+        where 1=1
+        <if test="exceptionLoginFlag == 1">
+            and cross_department_view='是'
+        </if>
+        <if test="exceptionLoginFlag == 2">
+            and secret_file_view='是'
+        </if>
+        GROUP BY
+        udate) u on temp.zheXianX = u.udate order by temp.zheXianX
+    </select>
+
+    <!--    /*仪表盘功能*/-->
+    <!--登录用户数量-->
+    <!--按天-->
+    <select id="getLoginCountZheXianByDay" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT a.hour zheXianX, ifnull(b.count, 0) zheXianY FROM (
+        SELECT 0 hour UNION ALL SELECT 1 hour UNION ALL SELECT 2 hour UNION ALL SELECT 3 hour UNION ALL SELECT 4 hour UNION ALL SELECT 5 hour UNION ALL SELECT 6 hour UNION ALL SELECT 7 hour UNION ALL SELECT 8 hour UNION ALL SELECT 9 hour UNION ALL SELECT 10 hour UNION ALL SELECT 11 hour UNION ALL SELECT 12 hour
+        UNION ALL SELECT 13 hour UNION ALL SELECT 14 hour UNION ALL SELECT 15 hour UNION ALL SELECT 16 hour UNION ALL SELECT 17 hour UNION ALL SELECT 18 hour UNION ALL SELECT 19 hour UNION ALL SELECT 20 hour UNION ALL SELECT 21 hour UNION ALL SELECT 22 hour UNION ALL SELECT 23 hour
+        ) a LEFT JOIN
+        (
+        SELECT
+        hour(action_begin_time)  hour,
+        count(action_begin_time) count
+        FROM scene_login
+        WHERE date_format(action_begin_time, '%Y-%m-%d') = #{zheXianDate}
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        GROUP BY date_format(action_begin_time, '%Y%m%d-%H'), hour
+        ) b
+        ON a.hour=b.hour
+        ORDER BY zheXianX
+    </select>
+
+    <!--按周-->
+    <select id="getLoginCountZheXianByWeek" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        dayTb.cday zheXianX,
+        IFNULL(tNumTb.num,0) zheXianY
+        FROM (
+        SELECT @cdate := DATE_ADD(@cdate, INTERVAL - 1 DAY) cday
+        FROM( SELECT @cdate := DATE_ADD(#{zheXianDate}, INTERVAL +1 DAY) FROM scene_list limit 7) t0
+        ) dayTb
+        LEFT JOIN(
+        SELECT date(t.action_begin_time) cday,count(*) num FROM scene_login t
+        where 1=1
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        GROUP BY cday
+        ) tNumTb ON tNumTb.cday = dayTb.cday
+    </select>
+
+    <!--按月-->
+    <select id="getLoginCountZheXianByMonth" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT temp.zheXianX,
+        coalesce(u.unmber,0) 'zheXianY' from(
+        SELECT
+        adddate(#{zheXianDate}, numlist.id) AS 'zheXianX'
+        FROM
+        (
+        SELECT
+        n1.i + n10.i * 10 + n100.i * 100 AS id
+        FROM
+        num n1
+        CROSS JOIN num AS n10
+        CROSS JOIN num AS n100
+        ) AS numlist
+        WHERE
+        adddate(#{zheXianDate}, numlist.id)  <![CDATA[<= ]]> date_add(#{zheXianDate},interval 1 month)) temp
+        LEFT JOIN
+        (SELECT left(action_begin_time,10)as udate,count(action_begin_time) unmber FROM scene_login
+        where 1=1
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        GROUP BY
+        udate) u on temp.zheXianX = u.udate order by temp.zheXianX
+    </select>
+
+    <!--  查询当天客户端总事件和异常事件-->
+    <select id="getClientAllEventCount" resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        ${sceneTableName}
+        WHERE
+        action_begin_time <![CDATA[>= ]]> CURDATE()
+        AND action_begin_time <![CDATA[<= ]]> (CURDATE()+1)
+    </select>
+
+    <!--查询安全事件-->
+    <select id="getNormalCounts" resultType="java.lang.Integer">
+        select count(*) count
+        from
+        ${tableName}
+        where TO_DAYS(action_begin_time) = TO_DAYS(NOW())
+            <!--<if test="tableName == 'scene_login'.toString()">
+                and login_status != '跨部门登录'
+            </if>
+            <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+                and cross_department_view != '是' and secret_file_view = !'是'
+            </if>
+            <if test="tableName == 'scene_general_delete'.toString()">
+                and cross_department_delete != '是' and cross_owner_delete != '是'
+            </if>
+            <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+                and cross_department_download != '是' and secret_file_download != '是' and
+                size_out_of_download != '暂定大小超标' and overload_download != '是'
+            </if>-->
+    </select>
+
+    <!--查询异常登录事件-->
+    <select id="getAbnormalCountLogin" resultType="java.lang.Integer">
+        select count(*) from scene_login
+        where action_begin_time <![CDATA[>= ]]> CURDATE() and action_begin_time <![CDATA[<= ]]> (CURDATE()+1) and login_status='跨部门登录'
+    </select>
+
+    <!--查询异常文档查看事件-->
+    <select id="getAbnormalCountViewDoc" resultType="java.lang.Integer">
+        select count(*) from scene_view_doc
+        where action_begin_time <![CDATA[>= ]]> CURDATE() and action_begin_time <![CDATA[<= ]]> (CURDATE()+1)
+        and (cross_department_view = '是' or secret_file_view = '是')
+    </select>
+
+    <!--查询异常文铛下载事件-->
+    <select id="getAbnormalCountDownDoc" resultType="java.lang.Integer">
+        select count(*) from scene_download_doc
+        where action_begin_time <![CDATA[>= ]]> CURDATE() and action_begin_time <![CDATA[<= ]]> (CURDATE()+1)
+        and (overload_download = '是' or cross_department_download = '是' or secret_file_download = '是')
+    </select>
+
+    <!--Map地图展示跨公司访问情况-->
+    <select id="getMapCrossCompanyInfo" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT DISTINCT
+	        company,
+	        owning_company ownerCompany
+        FROM
+	        scene_mytc_open_dataset
+        WHERE
+	        cross_company_view = '是'
+    </select>
+
+    <!--查询昨天总工时-->
+    <select id="getAllWorkingHoursYesterday" resultType="java.lang.Double">
+        select IFNULL(sum(operation_time),0) allWorkingHours
+        from working_hours
+        where time_start like "%"#{yesterdayDate}"%"
+    </select>
+
+    <!--查询当天总工时-->
+    <select id="getAllWorkingHoursToday" resultType="java.lang.Double">
+        SELECT IFNULL(sum(operation_time),0) allWorkingHours
+        FROM working_hours
+        WHERE time_start >= date_format(NOW(),'%Y-%m-%d')
+    </select>
+
+    <!--查询最近事件-->
+    <select id="getRecentEvents" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT
+        <include refid="result_column_list" />
+        company,employee_group employeeGroup,employee_name employeeName,action_begin_time actionBeginTime
+        FROM ${tableName}
+        /*WHERE action_begin_time <![CDATA[>= ]]> date_format(NOW(),'%Y-%m-%d')*/
+        where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[<=]]>  date(action_begin_time)
+        <if test="tableName == 'scene_login'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and login_status = '跨部门登录'
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and login_status != '跨部门登录'
+            </if>
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_view = '是' or secret_file_view = '是')
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and cross_department_view != '是' and secret_file_view != '是'
+            </if>
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_delete = '是' or cross_owner_delete = '是')
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and cross_department_delete != '是' and cross_owner_delete != '是'
+            </if>
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_download = '是' or secret_file_download = '是' or
+                size_out_of_download = '暂定大小超标' or overload_download = '是')
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and cross_department_download != '是' and secret_file_download != '是' and
+                size_out_of_download != '暂定大小超标' and overload_download != '是'
+            </if>
+        </if>
+    </select>
+
+    <sql id="result_column_list" >
+        <if test="tableName == 'scene_login'.toString()">
+            login_status loginStatus,
+        </if>
+        <if test="tableName == 'scene_mytc_open_dataset'.toString() or tableName == 'scene_mytc_viewDoc'.toString()">
+            cross_department_view crossDepartmentView,
+            secret_file_view secretFileView,
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            cross_department_delete crossDepartmentDelete,
+            cross_owner_delete crossOwnerDelete,
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or tableName == 'scene_mytc_namedRef_download'.toString()">
+            overload_download overloadDownload,
+            cross_department_download crossDepartmentDownload,
+            secret_file_download secretFileDownload,
+            size_out_of_download outOfSizeDownload,
+        </if>
+    </sql>
+
+    <!--查询部门事件数量-->
+    <select id="getDepartmentalEvents" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        select count(*) operaCount,
+        employee_group employeeGroup
+        from ${tableName}
+        where employee_group != '' and employee_group is not null
+        and DATE_SUB(CURDATE(), INTERVAL 7 DAY) <![CDATA[<=]]> date(action_begin_time)
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="tableName == 'scene_login'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and login_status = '跨部门登录'
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and login_status != '跨部门登录'
+            </if>
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_view = '是' or secret_file_view = '是')
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and cross_department_view != '是' and secret_file_view != '是'
+            </if>
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_delete = '是' or cross_owner_delete = '是')
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and cross_department_delete != '是' and cross_owner_delete != '是'
+            </if>
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_download = '是' or secret_file_download = '是' or
+                size_out_of_download = '暂定大小超标' or overload_download = '是')
+            </if>
+            <if test="exceptionLoginFlag == 2">
+                and cross_department_download != '是' and secret_file_download != '是' and
+                size_out_of_download != '暂定大小超标' and overload_download != '是'
+            </if>
+        </if>
+        group by employee_group
+    </select>
+
+    <!--查询公司-->
+    <select id="getAllCompany" resultType="java.lang.String">
+    select DISTINCT company from ${tableName} where company is not null and company != '' and company != 'dba';
+    </select>
+
+    <!--按天查询公司信息-->
+    <select id="getCompanyZheXianByDay" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT a.hour zheXianX, ifnull(b.count, 0) zheXianY FROM (
+        SELECT 0 hour UNION ALL SELECT 1 hour UNION ALL SELECT 2 hour UNION ALL SELECT 3 hour UNION ALL SELECT 4 hour UNION ALL SELECT 5 hour UNION ALL SELECT 6 hour UNION ALL SELECT 7 hour UNION ALL SELECT 8 hour UNION ALL SELECT 9 hour UNION ALL SELECT 10 hour UNION ALL SELECT 11 hour UNION ALL SELECT 12 hour
+        UNION ALL SELECT 13 hour UNION ALL SELECT 14 hour UNION ALL SELECT 15 hour UNION ALL SELECT 16 hour UNION ALL SELECT 17 hour UNION ALL SELECT 18 hour UNION ALL SELECT 19 hour UNION ALL SELECT 20 hour UNION ALL SELECT 21 hour UNION ALL SELECT 22 hour UNION ALL SELECT 23 hour
+        ) a LEFT JOIN
+        (
+        SELECT
+        hour(action_begin_time)  hour,
+        count(action_begin_time) count
+        FROM ${tableName}
+        WHERE date_format(action_begin_time, '%Y-%m-%d') = #{zheXianDate}
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        GROUP BY date_format(action_begin_time, '%Y%m%d-%H'), hour
+        ) b
+        ON a.hour=b.hour
+        ORDER BY zheXianX
+    </select>
+
+    <!--按周查询公司信息-->
+    <select id="getCompanyZheXianByWeek" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+    SELECT
+    dayTb.cday zheXianX,
+    IFNULL(tNumTb.num,0) zheXianY
+    FROM (
+    SELECT @cdate := DATE_ADD(@cdate, INTERVAL - 1 DAY) cday
+    FROM( SELECT @cdate := DATE_ADD(#{zheXianDate}, INTERVAL +1 DAY) FROM scene_list limit 7) t0
+    ) dayTb
+    LEFT JOIN(
+    SELECT date(t.action_begin_time) cday,count(*) num FROM ${tableName} t
+    where 1=1
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+    GROUP BY cday
+    ) tNumTb ON tNumTb.cday = dayTb.cday
+    </select>
+
+    <!--按月查询公司信息-->
+    <select id="getCompanyZheXianByMonth" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        SELECT temp.zheXianX,
+        coalesce(u.unmber,0) 'zheXianY' from(
+        SELECT
+        adddate(#{zheXianDate}, numlist.id) AS 'zheXianX'
+        FROM
+        (
+        SELECT
+        n1.i + n10.i * 10 + n100.i * 100 AS id
+        FROM
+        num n1
+        CROSS JOIN num AS n10
+        CROSS JOIN num AS n100
+        ) AS numlist
+        WHERE
+        adddate(#{zheXianDate}, numlist.id)  <![CDATA[<= ]]> date_add(#{zheXianDate},interval 1 month)) temp
+        LEFT JOIN
+        (SELECT left(action_begin_time,10)as udate,count(action_begin_time) unmber FROM ${tableName}
+        where 1=1
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        GROUP BY
+        udate) u on temp.zheXianX = u.udate order by temp.zheXianX
+    </select>
+
+    <select id="getCompanyNormalInfo" resultType="java.lang.Integer">
+        select count(*) count from ${tableName}
+        where
+        TO_DAYS(action_begin_time) = TO_DAYS(NOW())
+        <if test="tableName == 'scene_login'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and login_status = '跨部门登录'
+            </if>
+        </if>
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+    </select>
+
+    <!--查询客户端当日和昨日操作频次-->
+    <select id="queryClientOperaCounts" resultType="java.lang.Integer">
+        select count(*) count from
+        ${tableName}
+        where
+        date_format(action_begin_time,'%Y-%m-%d') = #{actionBeginTime}
+        <if test="tableName == 'scene_login'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and login_status = '跨部门登录'
+            </if>
+        </if>
+        <if test="tableName == 'scene_mytc_viewDoc'.toString() or
+                tableName == 'scene_mytc_open_dataset'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_view = '是' or secret_file_view = '是')
+            </if>
+        </if>
+        <if test="tableName == 'scene_general_delete'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_delete = '是' or cross_owner_delete = '是')
+            </if>
+        </if>
+        <if test="tableName == 'scene_mytc_export_PLMXML'.toString() or
+                tableName == 'scene_mytc_namedRef_download'.toString()">
+            <if test="exceptionLoginFlag == 1">
+                and (cross_department_download = '是' or secret_file_download = '是' or
+                size_out_of_download = '暂定大小超标' or overload_download = '是')
+            </if>
+        </if>
+    </select>
+
+
+
+    <!--KPI-->
+    <!--模糊查询workingHours的hostName-->
+    <select id="fuzzyQueryWorkingHostName" resultType="java.lang.String">
+        select
+        distinct host_name
+        from
+        working_hours
+        where
+        host_name is not null and host_name != ''
+        <if test="hostName != '' and hostName != null">
+            and host_name like binary "%"#{hostName}"%"
+        </if>
+    </select>
+
+    <!--查询company+employee_group+employee_name+hostname-->
+    <select id="queryComGroupName" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        select employee_name employeeName,company,employee_group employeeGroup,host_name hostName
+        from ${tableName}
+        where
+        employee_group is not null and employee_group != ''
+        and company is not null and company != ''
+        and employee_name is not null and employee_name != ''
+        and employee_name != 'infodba'
+        <if test="employeeName != '' and employeeName != null">
+        and binary employee_name = #{employeeName}
+        </if>
+        <if test="company != '' and company != null">
+            and binary company = #{company}
+        </if>
+        <if test="employeeGroup != '' and employeeGroup != null">
+            and binary employee_group = #{employeeGroup}
+        </if>
+        <if test="hostName != '' and hostName != null">
+            and binary host_name = #{hostName}
+        </if>
+        <if test="actionBeginTime != '' and actionBeginTime != null">
+            and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+        </if>
+        <if test="actionEndTime != '' and actionEndTime != null">
+            and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+        </if>
+        group by company,employee_group,employee_name,host_name
+    </select>
+
+    <!--根据employee_name查询场景次数-->
+    <select id="queryOperaCount" resultType="java.lang.Integer">
+        select count(*) operaCount
+        from ${tableName}
+        <where>
+            <if test="employeeName != '' and employeeName != null">
+                and binary employee_name = #{employeeName}
+            </if>
+            <if test="hostName != '' and hostName != null">
+                and binary host_name = #{hostName}
+            </if>
+            <if test="company != '' and company != null">
+                and binary company = #{company}
+            </if>
+            <if test="employeeGroup != '' and employeeGroup != null">
+                and binary employee_group = #{employeeGroup}
+            </if>
+            <if test="actionBeginTime != '' and actionBeginTime != null">
+                and action_begin_time <![CDATA[> ]]> #{actionBeginTime}
+            </if>
+            <if test="actionEndTime != '' and actionEndTime != null">
+                and action_begin_time <![CDATA[< ]]> #{actionEndTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryOperaCountLike" resultType="java.lang.Integer">
+        select count(*) operaCount
+        from ${tableName}
+        <where>
+            <if test="employeeName != '' and employeeName != null">
+                and employee_name = #{employeeName}
+            </if>
+            <if test="hostName != '' and hostName != null">
+                and binary host_name = #{hostName}
+            </if>
+            <if test="company != '' and company != null">
+                and binary company = #{company}
+            </if>
+            <if test="employeeGroup != '' and employeeGroup != null">
+                and binary employee_group = #{employeeGroup}
+            </if>
+            <if test="zheXianX != '' and zheXianX != null">
+                and action_begin_time like binary "%"#{zheXianX}"%"
+            </if>
+        </where>
+    </select>
+
+
+    <!--查询工时-->
+    <select id="queryWorkingTime" resultType="java.lang.Double">
+         select IFNULL(sum(operation_time),0) workingHours
+         from working_hours
+         <where>
+<!--             <if test="employeeName != '' and employeeName != null">
+                 and binary employee_name = #{employeeName}
+             </if>-->
+             <if test="hostName != '' and hostName != null">
+                 and binary host_name = #{hostName}
+             </if>
+             <if test="actionBeginTime != '' and actionBeginTime != null">
+                 and time_start <![CDATA[> ]]> #{actionBeginTime}
+             </if>
+             <if test="actionEndTime != '' and actionEndTime != null">
+                 and time_start <![CDATA[< ]]> #{actionEndTime}
+             </if>
+         </where>
+    </select>
+
+    <!--KPI折线图，根据折线图X轴日期模糊查询工时-->
+    <select id="queryWorkingTimeLike" resultType="java.lang.Double">
+         select IFNULL(sum(operation_time),0) workingHours
+         from working_hours
+        <where>
+<!--            <if test="employeeName != '' and employeeName != null">
+                and binary employee_name = #{employeeName}
+            </if>-->
+            <if test="hostName != '' and hostName != null">
+                and host_name = #{hostName}
+            </if>
+            <if test="zheXianX != '' and zheXianX != null">
+                and time_start like binary "%"#{zheXianX}"%"
+            </if>
+        </where>
+    </select>
+
+    <!--KPI折线图，根据employee_name和zheXianX 模糊查询-->
+    <select id="queryComGroupNameLike" resultType="com.szdeepwise.bydtcmonitor.entity.BYDEntity">
+        select employee_name employeeName,company,employee_group employeeGroup,host_name hostName
+        from ${tableName}
+        <where>
+            <if test="employeeName != '' and employeeName != null">
+                and binary employee_name = #{employeeName}
+            </if>
+            <if test="company != '' and company != null">
+                and binary company = #{company}
+            </if>
+            <if test="employeeGroup != '' and employeeGroup != null">
+                and binary employee_group = #{employeeGroup}
+            </if>
+            <if test="zheXianX != '' and zheXianX != null">
+                and action_begin_time like concat('%',#{zheXianX},'%')
+            </if>
+        </where>
+        group by company,employee_group,employee_name,host_name
+    </select>
+
+
+</mapper>

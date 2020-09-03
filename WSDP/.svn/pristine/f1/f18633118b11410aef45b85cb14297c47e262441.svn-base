@@ -1,0 +1,73 @@
+.clear {
+  *zoom: 1;
+  /*兼容IE6,7*/
+}
+
+.clear:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.manageUser .updateSet .el-button--primary {
+  height: 30px;
+  line-height: 0px;
+}
+.manageUser .userTable .wrap-flex .el-input__inner {
+  border: 1px solid #3878b1;
+  height: 30px;
+  line-height: 30px;
+  background-color: #14476d;
+  color: white;
+  font-size: 18px;
+}
+.manageUser .userTable .wrap-flex .el-button--primary {
+  color: white;
+  background-color: #428ec8;
+  border-color: #428ec8;
+  height: 30px;
+  line-height: 0px;
+  font-size: 18px;
+  
+}
+.manageUser .userTable .wrap-flex .el-icon-success:before {
+  color: #5db75f;
+}
+.manageUser .el-table th, .el-table tr {
+  background-color: #1f4271;
+}
+.manageUser .el-table {
+  color: white;
+}
+.manageUser .groupTable .el-table thead{
+  color: white;
+}
+.manageUser .userTables .el-table thead{
+  color: white;
+}
+.manageUser .groupTable .el-table--enable-row-transition .el-table__body td {
+  border-right: 1px solid #3e74a3;
+    border-bottom: 1px solid #3e74a3;
+    text-align: center;
+}
+.manageUser .userTables .el-table--enable-row-transition .el-table__body td {
+  border-right: 1px solid #3e74a3;
+    border-bottom: 1px solid #3e74a3;
+    text-align: center;
+}
+.manageUser .groupTable .el-table--border th {
+  border-right: 1px solid #3e74a3;
+  text-align: center;
+}
+.manageUser .userTables .el-table--border th {
+  border-right: 1px solid #3e74a3;
+  text-align: center;
+}

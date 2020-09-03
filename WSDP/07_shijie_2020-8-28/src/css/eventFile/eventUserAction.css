@@ -1,0 +1,66 @@
+/* 清除浮动的公共类 */
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+/* 为了兼容IE6,7 */
+.clearfix {
+  *zoom: 1;
+}
+.eventUserAction .seachStyle .el-input--suffix .el-input__inner {
+  padding-right: 0;
+}
+.eventUserAction .seachStyle .el-form-item__label {
+  color: white;
+  font-size: 16px;
+}
+
+.eventUserAction .seachStyle .el-input--suffix .el-input__inner {
+  padding-right: 0;
+}
+
+.eventUserAction .seachStyle .el-input__inner {
+  background-color: #06385c;
+  border: 1px solid #0c7ebd;
+  height: 40px;
+  line-height: 40px;
+  color: white;
+}
+
+.eventUserAction .seachStyle .seachButton .el-button--primary {
+  height: 40px;
+  line-height: 0px;
+}
+
+.eventUserAction .seachStyle .el-form-item {
+  margin-bottom: 0px;
+}
+.eventUserAction .tableBox .el-table tbody tr:hover>td { 
+  background-color:#153A6b!important;
+  color: white;
+}
+.eventUserAction .tableBox .el-table .cell {
+  color: white;
+  padding: 0px;
+}
+.eventUserAction .tableBox .el-table th, .el-table tr {
+  background-color:#153A6b;
+  text-align: center;
+}
+.eventUserAction .tableBox .el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color:#153A6b;
+}
+.eventUserAction .tableBox .el-table--enable-row-transition .el-table__body td {
+  text-align: center;
+}
+.eventUserAction .monitEventTable .el-table th, .el-table tr {
+  background-color:#153A6b;
+  color: white;
+  text-align: center;
+}
